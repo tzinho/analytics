@@ -1,0 +1,1469 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model TB_ACOESPROMO {
+  acaoPromoId Decimal       @id(map: "PK_ACOESPROMO") @db.Decimal(18, 0)
+  titulo      String?       @db.VarChar(25)
+  descricao   String?       @db.VarChar(255)
+  dataInicio  DateTime?     @db.DateTime
+  imagemFundo Bytes?
+  status      Int?          @default(1, map: "DF__TB_ACOESP__statu__33372DC8") @db.SmallInt
+  dataFinal   DateTime?     @db.DateTime
+  TB_VOUCHERS TB_VOUCHERS[]
+}
+
+model TB_BANCOS {
+  ban_id                 Decimal   @id(map: "PK_TB_BANCOS") @db.Decimal(18, 0)
+  ban_codigo_compensacao Decimal   @db.Decimal(18, 0)
+  ban_nome               String    @db.VarChar(255)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  status                 Int?      @default(1, map: "DF__TB_BANCOS__statu__622726DB") @db.SmallInt
+}
+
+model TB_BANCOS_AGENCIAS {
+  ban_age_id                   Decimal               @id(map: "PK_TB_BANCOS_AGENCIAS") @db.Decimal(18, 0)
+  ban_age_banco_id             Decimal?              @db.Decimal(18, 0)
+  ban_age_codigo               Decimal?              @db.Decimal(18, 0)
+  ban_age_nome                 String?               @db.VarChar(255)
+  ban_age_endereco_cep         String?               @db.VarChar(10)
+  ban_age_endereco_numero      String?               @db.VarChar(40)
+  ban_age_endereco_complemento String?               @db.VarChar(60)
+  usuario_cadastro_id          Decimal?              @db.Decimal(18, 0)
+  usuario_cadastro_data        DateTime?             @db.SmallDateTime
+  usuario_alteracao_id         Decimal?              @db.Decimal(18, 0)
+  usuario_alteracao_data       DateTime?             @db.SmallDateTime
+  unidade                      Decimal?              @db.Decimal(18, 0)
+  ban_age_plano_id             Decimal?              @db.Decimal(18, 0)
+  status                       Int?                  @default(1, map: "DF__TB_BANCOS__statu__631B4B14") @db.SmallInt
+  TB_CONTAS_BANCARIAS          TB_CONTAS_BANCARIAS[]
+}
+
+model TB_BLOQUEIO_CLIENTES {
+  blo_id                 Decimal   @id(map: "PK_TB_BLOQUEIO_CLIENTES") @db.Decimal(18, 0)
+  blo_cliente_id         Decimal   @db.Decimal(18, 0)
+  blo_bloquear           Boolean
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+}
+
+model TB_BLOQUEIO_CLIENTES_OBSERVACOES {
+  blo_obs_id             Decimal   @db.Decimal(18, 0)
+  blo_obs_sequencia      Decimal   @db.Decimal(1, 0)
+  blo_obs_texto          String    @db.VarChar(8000)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  blo_id_obs             Decimal   @id(map: "PK_TB_BLOQUEIO_CLIENTES_OBSERVACOES") @db.Decimal(18, 0)
+}
+
+model TB_BOLETIM_MOVIMENTOS {
+  boletimMovimentosId Decimal             @id(map: "PK_BOLETIMMOVIMENTOS") @db.Decimal(18, 0)
+  boletimId           Decimal?            @db.Decimal(18, 0)
+  tipoMovimento       Int?                @db.SmallInt
+  forma               String?             @db.Char(1)
+  planoContas         String?             @db.Char(4)
+  centroCustos        String?             @db.Char(5)
+  histPadrao          String?             @db.Char(3)
+  valor               Decimal?            @db.Decimal(18, 2)
+  descricao           String?             @db.VarChar(255)
+  despesaId           Decimal?            @db.Decimal(18, 0)
+  pedCancelaId        Decimal?            @db.Decimal(18, 0)
+  tipoCancelamento    Int?                @db.SmallInt
+  cancVenctosId       Decimal?            @db.Decimal(18, 0)
+  tipoReceitaId       Decimal?            @db.Decimal(18, 0)
+  receitaId           Decimal?            @db.Decimal(18, 0)
+  depositoId          Decimal?            @db.Decimal(18, 0)
+  TB_TIPOS_RECEITA    TB_TIPOS_RECEITA?   @relation(fields: [tipoReceitaId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIMMOVIMENTOS_1")
+  TB_DESPESAS_NOTAS   TB_DESPESAS_NOTAS?  @relation(fields: [despesaId], references: [DES_NOT_ID], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIMMOVIMENTOS_2")
+  TB_FECHA_CAIXA      TB_FECHA_CAIXA?     @relation(fields: [boletimId], references: [CAI_ID], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIMMOVIMENTOS_3")
+  TB_PEDIDOS_VENDAS   TB_PEDIDOS_VENDAS?  @relation(fields: [pedCancelaId], references: [ped_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIMMOVIMENTOS_4")
+  TB_RECEITAS_CAIXA   TB_RECEITAS_CAIXA?  @relation(fields: [receitaId], references: [receitaId], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIMMOVIMENTOS_5")
+  TB_DEPOSITOS_CAIXA  TB_DEPOSITOS_CAIXA? @relation(fields: [depositoId], references: [depositoId], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIMMOVIMENTOS_6")
+}
+
+model TB_CAMPANHA {
+  id_camp           Decimal   @id(map: "PK_TB_CAMPANHA") @db.Decimal(18, 0)
+  nome_camp         String?   @db.VarChar(100)
+  dti_camp          DateTime? @db.DateTime
+  dtf_camp          DateTime? @db.DateTime
+  vali_voucher_camp DateTime? @db.DateTime
+  desc_min_camp     Decimal?  @db.Decimal(18, 2)
+  desc_max_camp     Decimal?  @db.Decimal(18, 2)
+  desc_inter_camp   Decimal?  @db.Decimal(18, 0)
+  tam_chave_camp    Decimal?  @default(0, map: "DF__TB_campan__tam_c__4DCB2873") @db.Decimal(18, 0)
+  validar_camp      String?   @db.VarChar(2)
+  uni_id            Decimal?  @db.Decimal(9, 0)
+  tipo_camp         String?   @db.Char(1)
+  chave_camp        String?   @db.VarChar(15)
+}
+
+model TB_CAMPANHA_REGRA {
+  id_regra      Decimal  @id(map: "PK_TB_CAMPANHA_REGRA") @db.Decimal(18, 0)
+  id_camp       Decimal  @db.Decimal(18, 0)
+  id_vl_inicial Decimal  @db.Decimal(18, 2)
+  id_vl_final   Decimal  @db.Decimal(18, 2)
+  id_porc_desc  Decimal? @db.Decimal(18, 0)
+}
+
+model TB_CANCELAMENTOS {
+  cancelamentoId           Decimal                    @id(map: "PK_CANCELAMENTOS") @db.Decimal(18, 0)
+  pedidoId                 Decimal?                   @db.Decimal(18, 0)
+  descricao                String?                    @db.VarChar(255)
+  dataBoletim              DateTime?                  @db.SmallDateTime
+  unidadeId                Decimal?                   @db.Decimal(18, 0)
+  usuarioCadastro          Decimal?                   @db.Decimal(18, 0)
+  dataCadastro             DateTime?                  @db.SmallDateTime
+  usuarioAlteracao         Decimal?                   @db.Decimal(18, 0)
+  dataAlteracao            DateTime?                  @db.SmallDateTime
+  status                   Int?                       @default(1, map: "DF__TB_CANCEL__statu__69C848A3") @db.SmallInt
+  TB_PEDIDOS_VENDAS        TB_PEDIDOS_VENDAS?         @relation(fields: [pedidoId], references: [ped_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CANCELAMENTOS_PEDIDOS_VENDAS")
+  TB_UNIDADES              TB_UNIDADES?               @relation(fields: [unidadeId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CANCELAMENTOS_UNIDADES")
+  TB_USUARIOS              TB_USUARIOS?               @relation(fields: [usuarioCadastro], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CANCELAMENTOS_USUARIOS")
+  TB_CANCELAMENTOS_ITENS   TB_CANCELAMENTOS_ITENS[]
+  TB_CANCELAMENTOS_VENCTOS TB_CANCELAMENTOS_VENCTOS[]
+  TB_VOUCHERS              TB_VOUCHERS[]
+}
+
+model TB_CANCELAMENTOS_ITENS {
+  cancItemId              Decimal                  @id(map: "PK_CANCELAMENTOS_ITENS") @db.Decimal(18, 0)
+  cancelamentoId          Decimal?                 @db.Decimal(18, 0)
+  pedidoItemId            Decimal?                 @db.Decimal(18, 0)
+  qtde                    Int?                     @db.SmallInt
+  valorUnit               Decimal?                 @db.Decimal(18, 2)
+  valorTotal              Decimal?                 @db.Decimal(18, 2)
+  TB_PEDIDOS_VENDAS_ITENS TB_PEDIDOS_VENDAS_ITENS? @relation(fields: [pedidoItemId], references: [ped_ven_ite_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CANCELAMENTOITENS_PEDIDOITENS")
+  TB_CANCELAMENTOS        TB_CANCELAMENTOS?        @relation(fields: [cancelamentoId], references: [cancelamentoId], onDelete: NoAction, onUpdate: NoAction, map: "FK_CANCELAMENTOS_ITENS_CANCELAMENTOS")
+}
+
+model TB_CANCELAMENTOS_VENCTOS {
+  cancVenctosId    Decimal           @id(map: "PK_CANCELAMENTOS_VENCTOS") @db.Decimal(18, 0)
+  cancelamentoId   Decimal?          @db.Decimal(18, 0)
+  formaPagamento   Int?              @db.SmallInt
+  valor            Decimal?          @db.Decimal(18, 2)
+  TB_CANCELAMENTOS TB_CANCELAMENTOS? @relation(fields: [cancelamentoId], references: [cancelamentoId], onDelete: NoAction, onUpdate: NoAction, map: "FK_CANCELAMENTOS_VENCTOS_CANCELAMENTOS")
+}
+
+model TB_CARTAO_VENDA {
+  id_CV      Decimal  @id(map: "PK_TB_CARTAO_VENDA") @db.Decimal(18, 0)
+  set_id     Decimal  @db.Decimal(18, 0)
+  ultimo     Decimal  @db.Decimal(18, 0)
+  data       DateTime @db.SmallDateTime
+  usuario_id Decimal  @db.Decimal(18, 0)
+}
+
+model TB_CLIENTES {
+  cli_id                    Decimal                     @id(map: "PK_TB_CLIENTES") @db.Decimal(18, 0)
+  cli_razao_social          String                      @db.VarChar(45)
+  cli_nome_fantasia         String?                     @db.VarChar(45)
+  cli_endereco_cep          String?                     @db.VarChar(10)
+  cli_endereco_numero       String?                     @db.VarChar(8)
+  cli_endereco_complemento  String?                     @db.VarChar(30)
+  cli_contato               String?                     @db.VarChar(15)
+  cli_status                Boolean?
+  cli_status_desde          DateTime?                   @db.DateTime
+  usuario_cadastro_id       Decimal                     @db.Decimal(18, 0)
+  usuario_cadastro_data     DateTime                    @db.SmallDateTime
+  usuario_alteracao_id      Decimal?                    @db.Decimal(18, 0)
+  usuario_alteracao_data    DateTime?                   @db.SmallDateTime
+  unidade                   Decimal                     @db.Decimal(18, 0)
+  Cli_tipo                  String?                     @db.Char(1)
+  Cod_Emp_H                 String?                     @db.VarChar(20)
+  Cod_Fun_H                 String?                     @db.VarChar(20)
+  Divisao_H                 String?                     @db.VarChar(20)
+  veio_RH                   String?                     @db.Char(1)
+  Entrega                   String?                     @db.VarChar(1000)
+  numentrega                String?                     @db.VarChar(50)
+  complentrega              String?                     @db.VarChar(50)
+  bairroentrega             String?                     @db.VarChar(50)
+  cidadeentrega             String?                     @db.VarChar(50)
+  estadoentrega             String?                     @db.VarChar(50)
+  cepentrega                String?                     @db.VarChar(50)
+  empregadorEmpresa         String?                     @db.NVarChar(50)
+  empregadorEndereco        String?                     @db.NVarChar(50)
+  empregadorCargo           String?                     @db.NVarChar(50)
+  empregadorTempo           String?                     @db.NVarChar(50)
+  empregadorSalario         String?                     @db.NVarChar(10)
+  SaldoDevedor              Decimal?                    @default(0, map: "DF_TB_CLIENTES_SaldoDevedor") @db.Decimal(18, 2)
+  CreditoDisponivel         Decimal?                    @default(0, map: "DF_TB_CLIENTES_CreditoDisponivel") @db.Decimal(18, 2)
+  Limite                    Decimal?                    @default(0, map: "DF_TB_CLIENTES_Limite") @db.Decimal(18, 2)
+  DataLimite                DateTime?                   @db.SmallDateTime
+  UsuLimite                 Decimal?                    @db.Decimal(18, 0)
+  DataUltimoSaldo           DateTime?                   @db.SmallDateTime
+  id_Alinea                 Int?                        @default(0, map: "DF_TB_CLIENTES_id_Alinea")
+  ncli_id                   Decimal?                    @default(0, map: "DF_TB_CLIENTES_ncli_id") @db.Decimal(18, 0)
+  cli_dem                   String?                     @default("0", map: "DF_TB_CLIENTES_cli_dem") @db.VarChar(1)
+  cli_dem_data              DateTime?                   @db.SmallDateTime
+  demitido_por              String?                     @db.Char(21)
+  cli_val_comp              Decimal?                    @default(0, map: "DF__TB_CLIENT__cli_v__412BE2BF") @db.Decimal(9, 2)
+  cli_id_camp               Decimal?                    @default(0, map: "DF__TB_CLIENT__cli_i__4441BE39") @db.Decimal(18, 0)
+  dataAtualizaLimite        DateTime?                   @db.SmallDateTime
+  usuarioAtualizaLimite     String?                     @db.Char(5)
+  TB_CLIENTES_LIMITE_COMPRA TB_CLIENTES_LIMITE_COMPRA[]
+  TB_CLIENTES_TELEFONES     TB_CLIENTES_TELEFONES[]
+  TB_SORTEIOS               TB_SORTEIOS[]
+  TB_VOUCHERS               TB_VOUCHERS[]
+
+  @@index([Cod_Emp_H], map: "cod_emp")
+  @@index([Cod_Fun_H], map: "cod_fun")
+  @@index([cli_nome_fantasia], map: "ix_cli_nome_fantasia")
+  @@index([cli_razao_social], map: "ix_cli_razao_social")
+}
+
+model TB_CLIENTES_LIMITE_COMPRA {
+  id_compra              Decimal      @id(map: "PK_TB_CLIENTES_LIMITE_COMPRA") @db.Decimal(18, 0)
+  cli_id                 Decimal?     @db.Decimal(18, 0)
+  val_comp               Decimal?     @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime?    @db.DateTime
+  usuario_cadastro_id    Decimal?     @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime?    @db.DateTime
+  usuario_alteracao_id   Decimal?     @db.Decimal(18, 0)
+  val_parc               Int?         @default(10, map: "DF__TB_CLIENT__val_p__1C1EBE46")
+  TB_CLIENTES            TB_CLIENTES? @relation(fields: [cli_id], references: [cli_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TB_CLIENTES_LIMITE_COMPRA_TB_CLIENTES")
+
+  @@index([cli_id], map: "cli_id")
+}
+
+model TB_CLIENTES_MAILS {
+  cli_mail_cliente_id    Decimal   @db.Decimal(18, 0)
+  cli_mail_nome          String    @db.VarChar(50)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  cli_mail_id            Decimal   @id(map: "PK_TB_CLIENTES_MAILS") @db.Decimal(18, 0)
+}
+
+model TB_CLIENTES_PF {
+  cli_pf_cliente_id      Decimal   @db.Decimal(18, 0)
+  cli_pf_rg              String?   @db.VarChar(15)
+  cli_pf_cpf             String?   @db.Char(11)
+  cli_pf_nascimento      DateTime? @db.DateTime
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  veio_RH                String?   @db.Char(1)
+  cli_pf_lc_nasc         String?   @db.VarChar(30)
+  cli_pf_sexo            String?   @db.Char(1)
+  cli_pf_emp_trab        String?   @db.VarChar(40)
+  cli_pf_emp_end_id      Decimal?  @db.Decimal(18, 0)
+  cli_pf_emp_nr          String?   @db.VarChar(8)
+  cli_pf_emp_comp        String?   @db.VarChar(30)
+  cli_pf_dt_adm          DateTime? @db.DateTime
+  CLI_PF_EMP_CEP         String?   @db.Char(8)
+  cli_pf_id              Decimal   @id(map: "PK_TB_CLIENTES_PF") @db.Decimal(18, 0)
+}
+
+model TB_CLIENTES_PJ {
+  cli_pj_cliente_id      Decimal   @db.Decimal(18, 0)
+  cli_pj_cnpj            String    @db.VarChar(14)
+  cli_pj_ie              String?   @db.VarChar(12)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  cli_pj_id              Decimal   @id(map: "PK_TB_CLIENTES_PJ") @db.Decimal(18, 0)
+}
+
+model TB_CLIENTES_TELEFONES {
+  cli_tel_cliente_id     Decimal     @db.Decimal(18, 0)
+  cli_tel_ddd            String      @db.VarChar(2)
+  cli_tel_observacao     String?     @db.VarChar(8000)
+  usuario_cadastro_id    Decimal     @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime    @db.SmallDateTime
+  usuario_alteracao_id   Decimal?    @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime?   @db.SmallDateTime
+  unidade                Decimal     @db.Decimal(18, 0)
+  cli_tel_numero         String?     @db.VarChar(10)
+  cli_tel_id             Decimal     @id(clustered: false, map: "PK_TB_CLIENTES_TELEFONES") @db.Decimal(18, 0)
+  TB_CLIENTES            TB_CLIENTES @relation(fields: [cli_tel_cliente_id], references: [cli_id], onUpdate: NoAction, map: "FK_TB_CLIENTES_TELEFONES_TB_CLIENTES")
+
+  @@index([cli_tel_cliente_id], map: "IX_TB_CLIENTES_TELEFONES", clustered: true)
+}
+
+model TB_CONTAINERS {
+  containerId                                             Decimal      @id(map: "PK_CONTAINERS") @db.Decimal(18, 0)
+  descricao                                               String?      @db.VarChar(255)
+  unidadeOrigemId                                         Decimal?     @db.Decimal(18, 0)
+  unidadeDestinoId                                        Decimal?     @db.Decimal(18, 0)
+  usuarioCadastro                                         Decimal?     @db.Decimal(18, 0)
+  observacoes                                             String?      @db.VarChar(500)
+  dataCadastro                                            DateTime?    @db.SmallDateTime
+  usuarioAlteracao                                        Decimal?     @db.Decimal(18, 0)
+  dataAlteracao                                           DateTime?    @db.SmallDateTime
+  status                                                  Int?         @default(1, map: "DF__TB_CONTAI__statu__52AFD921") @db.SmallInt
+  produtoId                                               Decimal?     @db.Decimal(18, 0)
+  TB_PRODUTOS                                             TB_PRODUTOS? @relation(fields: [produtoId], references: [pro_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CONTAINERS_PRODUTOS")
+  TB_UNIDADES_TB_CONTAINERS_unidadeDestinoIdToTB_UNIDADES TB_UNIDADES? @relation("TB_CONTAINERS_unidadeDestinoIdToTB_UNIDADES", fields: [unidadeDestinoId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CONTAINERS_UNIDADESDESTINO")
+  TB_UNIDADES_TB_CONTAINERS_unidadeOrigemIdToTB_UNIDADES  TB_UNIDADES? @relation("TB_CONTAINERS_unidadeOrigemIdToTB_UNIDADES", fields: [unidadeOrigemId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CONTAINERS_UNIDADESORIGEM")
+  TB_USUARIOS_TB_CONTAINERS_usuarioAlteracaoToTB_USUARIOS TB_USUARIOS? @relation("TB_CONTAINERS_usuarioAlteracaoToTB_USUARIOS", fields: [usuarioAlteracao], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CONTAINERS_USUARIOSALT")
+  TB_USUARIOS_TB_CONTAINERS_usuarioCadastroToTB_USUARIOS  TB_USUARIOS? @relation("TB_CONTAINERS_usuarioCadastroToTB_USUARIOS", fields: [usuarioCadastro], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CONTAINERS_USUARIOSCAD")
+}
+
+model TB_CONTAS_BANCARIAS {
+  id                 Decimal              @id(map: "PK_TB_CONTAS_BANCARIAS") @db.Decimal(18, 0)
+  agenciaId          Decimal?             @db.Decimal(18, 0)
+  numero             String?              @db.Char(10)
+  descricao          String?              @db.VarChar(255)
+  status             Int?                 @default(1, map: "DF__TB_CONTAS__statu__65F7B7BF") @db.SmallInt
+  planoContas        String?              @db.Char(4)
+  histPadraoId       String?              @db.Char(3)
+  TB_BANCOS_AGENCIAS TB_BANCOS_AGENCIAS?  @relation(fields: [agenciaId], references: [ban_age_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CONTASBANCARIAS_BANCOSAGENCIAS")
+  TB_DEPOSITOS_CAIXA TB_DEPOSITOS_CAIXA[]
+}
+
+model TB_DEPOSITOS_ANEXOS {
+  depositoAnexoId       Int                 @id(map: "PK_DEPOSITOANEXO") @default(autoincrement())
+  descricao             String?             @db.VarChar(255)
+  nomeArquivo           String?             @db.VarChar(255)
+  extensao              String?             @db.VarChar(10)
+  anexo                 Bytes?
+  usuario_cadastro_id   Decimal?            @db.Decimal(18, 0)
+  usuario_cadastro_data DateTime?           @db.SmallDateTime
+  depositoId            Decimal?            @db.Decimal(18, 0)
+  TB_DEPOSITOS_CAIXA    TB_DEPOSITOS_CAIXA? @relation(fields: [depositoId], references: [depositoId], onDelete: NoAction, onUpdate: NoAction, map: "FK_DEPOSITOANEXO_1")
+}
+
+model TB_DEPOSITOS_CAIXA {
+  depositoId             Decimal                 @id(map: "PK_DEPOSITOSCAIXA") @db.Decimal(18, 0)
+  dataEmissao            DateTime?               @db.Date
+  valor                  Decimal?                @db.Decimal(18, 2)
+  unidadeid              Decimal?                @db.Decimal(18, 0)
+  usuario_cadastro_id    Decimal?                @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime?               @db.SmallDateTime
+  usuario_alteracao_id   Decimal?                @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime?               @db.SmallDateTime
+  contaBancariaId        Decimal?                @db.Decimal(18, 0)
+  status                 Int?                    @default(1, map: "DF__TB_DEPOSI__statu__044734B5") @db.SmallInt
+  TB_BOLETIM_MOVIMENTOS  TB_BOLETIM_MOVIMENTOS[]
+  TB_DEPOSITOS_ANEXOS    TB_DEPOSITOS_ANEXOS[]
+  TB_CONTAS_BANCARIAS    TB_CONTAS_BANCARIAS?    @relation(fields: [contaBancariaId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_DEPOSITOSCAIXA_1")
+}
+
+model TB_DESCONTO {
+  desc_id       Int          @id(map: "PK_TB_DESCONTO") @default(autoincrement())
+  desc_valor    Decimal?     @db.Decimal(18, 0)
+  desc_ativo    String?      @db.Char(1)
+  desc_cc_ativo Decimal?     @db.Decimal(18, 0)
+  unidadeId     Decimal?     @db.Decimal(18, 0)
+  TB_UNIDADES   TB_UNIDADES? @relation(fields: [unidadeId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_DESCONTO_1")
+}
+
+model TB_DESPESAS_ANEXOS {
+  despesaAnexoId        Int                @id(map: "PK_DESPESAANEXO") @default(autoincrement())
+  descricao             String?            @db.VarChar(255)
+  nomeArquivo           String?            @db.VarChar(255)
+  extensao              String?            @db.VarChar(10)
+  anexo                 Bytes?
+  usuario_cadastro_id   Decimal?           @db.Decimal(18, 0)
+  usuario_cadastro_data DateTime?          @db.SmallDateTime
+  despesaId             Decimal?           @db.Decimal(18, 0)
+  TB_DESPESAS_NOTAS     TB_DESPESAS_NOTAS? @relation(fields: [despesaId], references: [DES_NOT_ID], onDelete: NoAction, onUpdate: NoAction, map: "FK_DESPESAANEXO_1")
+}
+
+model TB_DESPESAS_NOTAS {
+  DES_NOT_ID             Decimal                 @id(map: "PK_TB_DESPESAS_NOTAS") @db.Decimal(18, 0)
+  DES_NOT_N              Decimal?                @db.Decimal(18, 0)
+  DES_NOT_FOR_ID         Decimal?                @db.Decimal(18, 0)
+  DESP_NOT_DATA_EMISSAO  DateTime?               @db.DateTime
+  DESP_NOT_DATA_ENTRADA  DateTime?               @db.DateTime
+  DESP_NOT_VALOR_TOTAL   Decimal?                @db.Decimal(18, 2)
+  DESP_UNI_PAG           Decimal?                @db.Decimal(18, 0)
+  DESP_CC_PAG            Decimal?                @db.Decimal(18, 0)
+  DESP_CENTRO_CUSTO      Decimal?                @db.Decimal(18, 0)
+  DESP_NOT_CLASS_ID      Decimal?                @db.Decimal(18, 0)
+  DESP_DESC_MERCADORIA   String?                 @db.VarChar(150)
+  DESP_NOTA_TIPO_PAG     String?                 @db.VarChar(50)
+  USUARIO_CADASTRO_ID    Decimal?                @db.Decimal(18, 0)
+  USUARIO_CADASTRO_DATA  DateTime?               @db.SmallDateTime
+  USUARIO_ALTERACAO_ID   Decimal?                @db.Decimal(18, 0)
+  USUARIO_ALTERACAO_DATA DateTime?               @db.SmallDateTime
+  DES_NOT_FAT_IPIx       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__297CB217") @db.Decimal(18, 2)
+  DES_NOT_FAT_ICMS       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__34EE64C3") @db.Decimal(18, 2)
+  DES_NOT_FAT_INSS       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__4060176F") @db.Decimal(18, 2)
+  DES_NOT_FAT_IRRF       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__4BD1CA1B") @db.Decimal(18, 2)
+  DES_NOT_FAT_ISSx       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__57437CC7") @db.Decimal(18, 2)
+  DES_NOT_FAT_PCCx       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__62B52F73") @db.Decimal(18, 2)
+  DES_NOT_FAT_Fret       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__6E26E21F") @db.Decimal(18, 2)
+  DES_NOT_FAT_OuDe       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__799894CB") @db.Decimal(18, 2)
+  DES_NOT_FAT_Tota       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__050A4777") @db.Decimal(18, 2)
+  DES_NOT_FAT_ToPr       Decimal?                @default(0, map: "DF__TB_DESPES__DES_N__107BFA23") @db.Decimal(18, 2)
+  DES_NOT_FAT_DExF       DateTime?               @default(dbgenerated("0"), map: "DF__TB_DESPES__DES_N__1BEDACCF") @db.DateTime
+  DES_NOT_FAT_DExC       DateTime?               @default(dbgenerated("0"), map: "DF__TB_DESPES__DES_N__275F5F7B") @db.DateTime
+  DES_NOT_FAT_PlCo       Decimal?                @db.Decimal(18, 0)
+  desp_id_tipo_comp      Decimal?                @default(0, map: "DF__TB_DESPES__desp___7009FA95") @db.Decimal(18, 0)
+  desp_item_estoque      String?                 @db.Char(1)
+  STATUS                 Int?                    @default(1, map: "DF_TB_DESPESAS_NOTAS_STATUS") @db.SmallInt
+  setorDestinoId         Decimal?                @db.Decimal(18, 0)
+  planoContasId          Int?
+  TB_BOLETIM_MOVIMENTOS  TB_BOLETIM_MOVIMENTOS[]
+  TB_DESPESAS_ANEXOS     TB_DESPESAS_ANEXOS[]
+
+  @@index([DESP_CC_PAG], map: "cc_pag")
+  @@index([DESP_NOT_DATA_EMISSAO], map: "dt_emi")
+  @@index([DESP_NOT_DATA_ENTRADA], map: "dt_entrada")
+  @@index([DESP_UNI_PAG], map: "uni_pag")
+}
+
+model TB_DIREITOS {
+  DIR_ID         Decimal     @id(map: "PK_TB_DIREITOS") @db.Decimal(18, 0)
+  dir_perfil_id  Decimal?    @db.Decimal(18, 0)
+  dir_funcoes_id Decimal?    @db.Decimal(18, 0)
+  dir_gravar     Boolean?
+  dir_consultar  Boolean?
+  dir_excluir    Boolean?
+  dir_alterar    Boolean?
+  dir_todosuni   Boolean?
+  TB_FUNCOES     TB_FUNCOES? @relation(fields: [dir_funcoes_id], references: [fun_funcoes_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_DIREITOS_1")
+  TB_PERFIL      TB_PERFIL?  @relation(fields: [dir_perfil_id], references: [per_perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_DIREITOS_2")
+}
+
+model TB_ENTREGAS {
+  entregaId             Decimal                 @id(map: "PK_ENTREGAS") @db.Decimal(18, 0)
+  unidadeId             Decimal?                @db.Decimal(18, 0)
+  status                Int?                    @db.SmallInt
+  dataEntrega           DateTime?               @db.DateTime
+  veiculo               String?                 @db.VarChar(255)
+  motorista             String?                 @db.VarChar(255)
+  dataCadastro          DateTime?               @db.DateTime
+  usuarioId             Decimal?                @db.Decimal(18, 0)
+  TB_UNIDADES           TB_UNIDADES?            @relation(fields: [unidadeId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ENTREGAS_UNIDADE")
+  TB_USUARIOS           TB_USUARIOS?            @relation(fields: [usuarioId], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ENTREGAS_USUARIO")
+  TB_ENTREGAS_FRETES    TB_ENTREGAS_FRETES[]
+  TB_ENTREGAS_HISTORICO TB_ENTREGAS_HISTORICO[]
+}
+
+model TB_ENTREGAS_FRETES {
+  entregaFreteId    Decimal            @id(map: "PK_ENTREGASFRETES") @db.Decimal(18, 0)
+  entregaId         Decimal?           @db.Decimal(18, 0)
+  freteId           Decimal?           @db.Decimal(18, 0)
+  usuarioId         Decimal?           @db.Decimal(18, 0)
+  dataCadastro      DateTime?          @db.DateTime
+  TB_ENTREGAS       TB_ENTREGAS?       @relation(fields: [entregaId], references: [entregaId], onDelete: NoAction, onUpdate: NoAction, map: "FK_ENTREGASFRETES_ENTREGA")
+  TB_PEDIDOS_FRETES TB_PEDIDOS_FRETES? @relation(fields: [freteId], references: [freteId], onDelete: NoAction, onUpdate: NoAction, map: "FK_ENTREGASFRETES_FRETE")
+  TB_USUARIOS       TB_USUARIOS?       @relation(fields: [usuarioId], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ENTREGASFRETES_USUARIO")
+}
+
+model TB_ENTREGAS_HISTORICO {
+  entregaHistoricoId Decimal     @id(map: "PK_ENTREGASHISTORICO") @db.Decimal(18, 0)
+  status             Int?        @db.SmallInt
+  dataHora           DateTime?   @db.DateTime
+  usuarioId          Decimal?    @db.Decimal(18, 0)
+  entregaId          Decimal     @db.Decimal(18, 0)
+  TB_ENTREGAS        TB_ENTREGAS @relation(fields: [entregaId], references: [entregaId], onUpdate: NoAction, map: "FK_ENTREGAHIST_ENTREGA")
+}
+
+model TB_ESTACOES {
+  codigo    Decimal  @id(map: "PK_TB_ESTACAO") @db.Decimal(18, 0)
+  Estacao   String?  @db.VarChar(30)
+  uni_id    Decimal? @db.Decimal(18, 0)
+  set_id    Decimal? @db.Decimal(18, 0)
+  ip        String?  @db.VarChar(30)
+  Descr     String?  @db.VarChar(90)
+  ID_TERTEF String?  @db.VarChar(20)
+}
+
+model TB_ESTOQUE_LOJA {
+  loja_estoque_id   Decimal  @id(map: "PK_TB_ESTOQUE_LOJA") @db.Decimal(18, 0)
+  loja_produto_id   Decimal? @db.Decimal(18, 0)
+  loja_produto_qtde Decimal? @db.Decimal(18, 0)
+  unidade           Decimal? @db.Decimal(18, 0)
+
+  @@index([loja_produto_id], map: "id_produto")
+  @@index([loja_produto_qtde], map: "qtde")
+  @@index([unidade], map: "unidade")
+}
+
+model TB_ESTOQUE_MOVIMENTOS {
+  Pro_Produtos_Loja_Id Decimal   @id(map: "PK_TB_ESTOQUE_MOVIMENTOS") @db.Decimal(18, 0)
+  Pro_loja_estoque_id  Decimal?  @db.Decimal(18, 0)
+  Pro_loja_Produto_Id  Decimal?  @db.Decimal(18, 0)
+  Pro_loja_Ent_Sai     String?   @db.VarChar(1)
+  Pro_Loja_Quantidade  Decimal?  @db.Decimal(18, 0)
+  Pro_loja_data        DateTime? @db.DateTime
+  Pro_loja_cc          String?   @db.Char(20)
+  unidade              Decimal?  @db.Decimal(18, 0)
+  Procedencia          String?   @db.Char(10)
+  ID_Nota              Decimal?  @db.Decimal(18, 0)
+  ID_Ped               Decimal?  @db.Decimal(18, 0)
+  ID_Roma              Decimal?  @db.Decimal(18, 0)
+  ID_Requi             Decimal?  @db.Decimal(18, 0)
+  Motivo               String?   @db.VarChar(20)
+  Obs                  String?   @db.VarChar(200)
+  ID_For               Decimal?  @db.Decimal(18, 0)
+  ID_Transf_Prod       Decimal?  @db.Decimal(18, 0)
+
+  @@index([Pro_loja_data], map: "data")
+  @@index([Pro_loja_cc], map: "ix_pro_loja_cc")
+  @@index([Pro_loja_estoque_id], map: "ix_pro_loja_estoque_id")
+  @@index([Pro_loja_Produto_Id], map: "ix_pro_loja_produto_id")
+  @@index([unidade], map: "ix_unidade")
+  @@index([Pro_loja_Ent_Sai], map: "mov")
+  @@index([ID_Ped], map: "ped_id")
+}
+
+model TB_FECHA_CAIXA {
+  CAI_ID                  Decimal                 @id(map: "PK_CAI_ID") @db.Decimal(18, 0)
+  CAI_DEB                 Decimal                 @db.Decimal(18, 2)
+  CAI_CRED                Decimal                 @db.Decimal(18, 2)
+  CAI_SALDO               Decimal                 @db.Decimal(18, 2)
+  CAI_DATA                DateTime?               @db.SmallDateTime
+  CAI_UNI_ID              Decimal?                @db.Decimal(18, 0)
+  CAI_SALDO_ANT           Decimal?                @db.Decimal(18, 2)
+  CAI_CC                  String?                 @db.VarChar(9)
+  STATUS                  String?                 @db.Char(1)
+  CAI_DEP                 Decimal?                @db.Decimal(18, 2)
+  CAI_DESP                Decimal?                @db.Decimal(18, 2)
+  CAI_VALEF               Decimal?                @db.Decimal(18, 2)
+  CAIXA                   Decimal?                @db.Decimal(18, 0)
+  CAI_CARD                Decimal?                @db.Decimal(18, 2)
+  CAI_BOL                 Decimal?                @db.Decimal(18, 0)
+  BOLETO                  String?                 @db.VarChar(50)
+  CAI_CHE_REM             Decimal?                @db.Decimal(18, 2)
+  CAI_CHE_VIS             Decimal?                @db.Decimal(18, 2)
+  CAI_VEN                 Decimal?                @db.Decimal(18, 2)
+  CAI_DON                 Decimal?                @db.Decimal(18, 2)
+  CAI_TOT_VEN             Decimal?                @db.Decimal(18, 2)
+  CAI_TOT_DON             Decimal?                @db.Decimal(18, 2)
+  CAI_FIXO                Decimal?                @db.Decimal(18, 2)
+  CAI_EXP_CONT            String?                 @db.Char(1)
+  CAI_EXP_FINAN           String?                 @db.Char(1)
+  FECHAMENTOUSUARIOID     Int?
+  contemPendencias        Int?                    @db.SmallInt
+  transferenciaNumerarios Decimal?                @db.Decimal(18, 2)
+  valorVendasPix          Decimal?                @default(0, map: "DF__TB_FECHA___valor__5B451F22") @db.Decimal(18, 2)
+  valorReceitas           Decimal?                @default(0, map: "DF__TB_FECHA___valor__5D2D6794") @db.Decimal(18, 2)
+  unidadeId               Decimal?                @db.Decimal(18, 0)
+  TB_BOLETIM_MOVIMENTOS   TB_BOLETIM_MOVIMENTOS[]
+  TB_UNIDADES             TB_UNIDADES?            @relation(fields: [unidadeId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_BOLETIM_UNIDADE")
+
+  @@index([CAIXA], map: "IDX_PLANOCONTAS")
+  @@index([CAI_UNI_ID], map: "IDX_SETOR")
+  @@index([FECHAMENTOUSUARIOID], map: "IDX_USUARIO")
+}
+
+model TB_FORMAS_PAGAMENTOS {
+  for_pag_id                          Decimal                               @id(map: "PK_TB_FORMAS_PAGAMENTOS") @db.Decimal(18, 0)
+  for_pag_nome                        String                                @db.VarChar(45)
+  for_pag_qtde_pgtos                  Decimal                               @db.Decimal(9, 0)
+  for_pag_tipo_forma                  Decimal                               @default(0, map: "DF_TB_FORMAS_PAGAMENTOS_for_pag_cheque") @db.Decimal(2, 0)
+  for_pag_parcelas_tempo              Decimal                               @db.Decimal(18, 0)
+  for_pag_parcelas_periodo            String                                @db.VarChar(5)
+  for_pag_conta_contabil              Decimal                               @db.Decimal(18, 0)
+  usuario_cadastro_id                 Decimal                               @db.Decimal(18, 0)
+  usuario_cadastro_data               DateTime                              @db.SmallDateTime
+  usuario_alteracao_id                Decimal?                              @db.Decimal(18, 0)
+  usuario_alteracao_data              DateTime?                             @db.SmallDateTime
+  unidade                             Decimal                               @db.Decimal(18, 0)
+  AGP                                 String?                               @db.VarChar(10)
+  MDRCODIGO                           String?                               @db.Char(2)
+  for_pag_nome_skytef                 String?                               @db.VarChar(45)
+  for_inf_pagto                       String?                               @db.VarChar(1)
+  for_pag_exibe                       String?                               @db.Char(1)
+  status                              Int?                                  @default(1, map: "DF__TB_FORMAS__statu__63DA6523") @db.SmallInt
+  TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS[]
+}
+
+model TB_FORMULARIOS {
+  for_id        Decimal @id(map: "PK_TB_FORMULARIOS") @db.Decimal(18, 0)
+  for_descricao String? @db.VarChar(100)
+  for_nome      String? @db.VarChar(50)
+  status        Int?    @default(1, map: "DF__TB_FORMUL__statu__62E640EA") @db.SmallInt
+}
+
+model TB_FORNECEDOR_GRUPO {
+  fornecedorGrupoId  Decimal             @id(map: "TB_FORNECEDOR_GRUPO_PK") @db.Decimal(18, 0)
+  fornecedorId       Decimal?            @db.Decimal(18, 0)
+  grupoId            Decimal?            @db.Decimal(18, 0)
+  dataInsercao       DateTime?           @db.DateTime
+  usuarioInsercao    Decimal?            @db.Decimal(18, 0)
+  TB_FORNECEDORES    TB_FORNECEDORES?    @relation(fields: [fornecedorId], references: [for_id], onDelete: NoAction, onUpdate: NoAction, map: "TB_FORNECEDOR_GRUPO_TB_FORNECEDORES_FK")
+  TB_PRODUTOS_GRUPOS TB_PRODUTOS_GRUPOS? @relation(fields: [grupoId], references: [ID_GRUPO], onDelete: NoAction, onUpdate: NoAction, map: "TB_FORNECEDOR_GRUPO_TB_PRODUTOS_GRUPOS_FK")
+}
+
+model TB_FORNECEDORES {
+  for_id                   Decimal               @id(map: "PK_TB_FORNECEDORES") @db.Decimal(18, 0)
+  for_razao_social         String                @db.VarChar(200)
+  for_nome_fantasia        String                @db.VarChar(200)
+  for_endereco_cep         String?               @db.VarChar(10)
+  for_endereco_numero      String                @db.VarChar(8)
+  for_endereco_complemento String?               @db.VarChar(30)
+  for_contato              String                @db.VarChar(15)
+  for_status               Boolean?
+  for_status_desde         DateTime?             @db.DateTime
+  usuario_cadastro_id      Decimal               @db.Decimal(18, 0)
+  usuario_cadastro_data    DateTime              @db.SmallDateTime
+  usuario_alteracao_id     Decimal?              @db.Decimal(18, 0)
+  usuario_alteracao_data   DateTime?             @db.SmallDateTime
+  unidade                  Decimal               @db.Decimal(18, 0)
+  for_codigo               Decimal?              @db.Decimal(18, 0)
+  cep_id                   Decimal?              @db.Decimal(18, 0)
+  ddd1                     String?               @db.VarChar(50)
+  ddd2                     String?               @db.VarChar(50)
+  ddd3                     String?               @db.VarChar(50)
+  tel1                     String?               @db.VarChar(50)
+  tel2                     String?               @db.VarChar(50)
+  tel3                     String?               @db.VarChar(50)
+  mail1                    String?               @db.VarChar(30)
+  mail2                    String?               @db.VarChar(30)
+  mail3                    String?               @db.VarChar(30)
+  fax1                     String?               @db.VarChar(50)
+  fax2                     String?               @db.VarChar(50)
+  fax3                     String?               @db.VarChar(50)
+  obs                      String?               @db.VarChar(50)
+  for_tipo                 String?               @db.VarChar(50)
+  cpf                      String?               @db.VarChar(50)
+  cnpj                     String?               @db.VarChar(50)
+  ins                      String?               @db.VarChar(50)
+  Status                   Int?
+  for_producao_terceiros   Int?                  @default(0, map: "DF__TB_FORNEC__for_p__41BA5749") @db.SmallInt
+  TB_FORNECEDOR_GRUPO      TB_FORNECEDOR_GRUPO[]
+  TB_PRODUCAO_TEC          TB_PRODUCAO_TEC[]
+}
+
+model TB_FUNCIONARIOS {
+  fun_id                   Decimal   @id(clustered: false, map: "PK_TB_FUNCIONARIOS") @db.Decimal(18, 0)
+  fun_nome                 String    @db.VarChar(45)
+  fun_sexo                 String    @db.VarChar(10)
+  fun_nascimento           String    @db.VarChar(10)
+  fun_endereco_cep         String    @db.VarChar(10)
+  fun_endereco_numero      String    @db.VarChar(8)
+  fun_endereco_complemento String?   @db.VarChar(30)
+  fun_salario              String    @db.VarChar(17)
+  fun_chapa                String    @db.VarChar(15)
+  fun_demissao             DateTime? @db.SmallDateTime
+  fun_unidade_id           Decimal   @db.Decimal(18, 0)
+  fun_setor_id             Decimal   @db.Decimal(18, 0)
+  fun_cargo_id             Decimal   @db.Decimal(18, 0)
+  fun_percentual_vendas    String    @db.VarChar(4)
+  usuario_cadastro_id      Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data    DateTime  @db.SmallDateTime
+  usuario_alteracao_id     Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data   DateTime? @db.SmallDateTime
+  unidade                  Decimal   @db.Decimal(18, 0)
+}
+
+model TB_FUNCIONARIOS_CARGOS {
+  fun_car_id             Decimal   @id(map: "PK_TB_FUNCIONARIOS_CARGOS") @db.Decimal(18, 0)
+  fun_car_nome           String    @db.VarChar(50)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+}
+
+model TB_FUNCIONARIOS_MAILS {
+  fun_mail_id             Decimal   @id(map: "PK_TB_FUNCIONARIOS_MAILS") @db.Decimal(18, 0)
+  fun_mail_funcionario_id Decimal   @db.Decimal(18, 0)
+  fun_mail_nome           String    @db.VarChar(50)
+  usuario_cadastro_id     Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data   DateTime  @db.DateTime
+  usuario_alteracao_id    Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data  DateTime? @db.DateTime
+  unidade                 Decimal   @db.Decimal(18, 0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TB_FUNCIONARIOS_TELEFONES {
+  fun_tel_id             Decimal   @db.Decimal(18, 0)
+  fun_tel_funcionario_id Decimal   @db.Decimal(18, 0)
+  fun_tel_ddd            String    @db.VarChar(2)
+  fun_tel_observacao     String?   @db.VarChar(200)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.DateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.DateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  fun_tel_numero         String?   @db.VarChar(10)
+
+  @@ignore
+}
+
+model TB_FUNCOES {
+  fun_funcoes_id    Decimal       @id(map: "PK_TB_FUNCOES") @db.Decimal(18, 0)
+  fun_nome_controle String?       @db.NVarChar(80)
+  fun_funcoes       String?       @db.NVarChar(80)
+  fun_formulario_id Decimal?      @default(0, map: "DF__TB_FUNCOE__fun_f__373AC636") @db.Decimal(18, 0)
+  status            Int?          @default(1, map: "DF__TB_FUNCOE__statu__61F21CB1") @db.SmallInt
+  TB_DIREITOS       TB_DIREITOS[]
+}
+
+model TB_HP {
+  id_hp     Decimal @db.Decimal(18, 0)
+  dsc_hp    String? @db.VarChar(50)
+  id_cod_hp Decimal @id(map: "PK_TB_HP") @db.Decimal(18, 0)
+}
+
+model TB_LOGS {
+  id_logs   Decimal   @id(map: "PK_TB_LOGS") @db.Decimal(18, 0)
+  Login     String?   @db.VarChar(20)
+  Data      DateTime? @db.DateTime
+  Estacao   String?   @db.VarChar(50)
+  descricao String?   @db.VarChar(200)
+
+  @@index([Data], map: "data")
+  @@index([descricao], map: "descricao")
+  @@index([Estacao], map: "estacao")
+  @@index([Login], map: "login")
+}
+
+model TB_MANUT_GARANTIA {
+  Ped_manut_ID           Int       @id(map: "PK_TB_MANUT_GARANTIA") @default(autoincrement())
+  Controle_id            Int
+  Solicitante            Int?
+  DMD                    String?   @db.VarChar(50)
+  Dt_Compra              DateTime? @db.DateTime
+  Dt_Inclusao            DateTime? @db.DateTime
+  Cliente_id             Int?
+  Dt_Agendamento         DateTime? @db.DateTime
+  Previsao               DateTime? @db.DateTime
+  departamento           String?   @db.VarChar(50)
+  Dt_conclusao           DateTime? @db.DateTime
+  Tecnico                String?   @db.VarChar(50)
+  Observacao             String?   @db.VarChar(50)
+  PLACA_VEI              String?   @db.VarChar(10)
+  VEICULO                String?   @db.VarChar(50)
+  DATA_CONC              DateTime? @db.DateTime
+  KM_SAIDA               String?   @db.VarChar(10)
+  KM_CHEGADA             String?   @db.VarChar(10)
+  TIPO_VEICULO           String?   @db.VarChar(50)
+  DT_ALTERACAO           DateTime? @db.DateTime
+  USUARIO_ALTERACAO_ID   Int?
+  Unidade                Int?
+  Observacao_Agendamento String?   @db.VarChar(200)
+  obs_manut              String?   @db.VarChar(8000)
+  status                 String?   @db.Char(2)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TB_MANUT_GARANTIA_ITENS {
+  Ped_manut_Iten_id Int     @default(autoincrement())
+  Ped_manut_id      Int?
+  Prod_id           Int?
+  Produto           String? @db.VarChar(50)
+  Familia           String? @db.VarChar(50)
+  Descricao         String? @db.VarChar(1000)
+  Codigo            String? @db.VarChar(15)
+
+  @@ignore
+}
+
+model TB_PARAMETRO_CONTABEIS {
+  par_cont_id       Int     @id(map: "PK_TB_PARAMETRO_CONTABEIS") @default(autoincrement())
+  par_cont_contaD   String? @db.VarChar(5)
+  par_cont_contaC   String? @db.VarChar(5)
+  par_cont_seq      Int?
+  par_cont_operacao String? @db.VarChar(50)
+  par_cont_forma    String? @db.VarChar(5)
+  par_cont_obs      String? @db.VarChar(100)
+  par_cont_hpc      String? @db.VarChar(5)
+  par_cont_hpd      String? @db.VarChar(5)
+}
+
+model TB_PARAMETROS {
+  parametroId Decimal  @id(map: "PK_PARAMETROS") @db.Decimal(18, 0)
+  descricao   String?  @db.VarChar(255)
+  numerico    Decimal? @db.Decimal(18, 2)
+  texto       String?  @db.VarChar(255)
+  status      Int?     @default(1, map: "DF__TB_PARAME__statu__5A50FAE9") @db.SmallInt
+}
+
+model TB_PEDIDOS_CAMPANHA {
+  id_ped_camp   Decimal   @id(map: "PK_TB_PEDIDOS_CAMPANHA") @db.Decimal(18, 0)
+  id_ped_id     Decimal?  @db.Decimal(18, 0)
+  id_camp       Decimal?  @db.Decimal(18, 0)
+  desc_camp     Decimal?  @db.Decimal(18, 2)
+  data_ped_camp DateTime? @default(now(), map: "DF_TB_PEDIDOS_CAMPANHA_data_ped_camp") @db.DateTime
+  voucher_camp  String?   @db.VarChar(35)
+}
+
+model TB_PEDIDOS_FRETES {
+  freteId                     Decimal                       @id(map: "PK_PEDIDOSFRETES") @db.Decimal(18, 0)
+  pedidoId                    Decimal?                      @db.Decimal(18, 0)
+  status                      Int?                          @db.SmallInt
+  dataAgendada                DateTime?                     @db.DateTime
+  valorDistancia              Decimal?                      @db.Decimal(18, 2)
+  nomeDestinatario            String?                       @db.VarChar(255)
+  titulo                      String?                       @db.VarChar(100)
+  cep                         String?                       @db.Char(8)
+  endereco                    String?                       @db.VarChar(255)
+  numero                      String?                       @db.VarChar(255)
+  complemento                 String?                       @db.VarChar(255)
+  bairro                      String?                       @db.VarChar(255)
+  cidade                      String?                       @db.VarChar(150)
+  estado                      String?                       @db.Char(2)
+  referencia                  String?                       @db.VarChar(255)
+  TB_ENTREGAS_FRETES          TB_ENTREGAS_FRETES[]
+  TB_PEDIDOS_VENDAS           TB_PEDIDOS_VENDAS?            @relation(fields: [pedidoId], references: [ped_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_FRETES_PEDIDO")
+  TB_PEDIDOS_FRETES_HISTORICO TB_PEDIDOS_FRETES_HISTORICO[]
+}
+
+model TB_PEDIDOS_FRETES_HISTORICO {
+  freteHistoricoId  Decimal           @id(map: "PK_FRETESHISTORICO") @db.Decimal(18, 0)
+  status            Int?              @db.SmallInt
+  dataHora          DateTime?         @db.DateTime
+  usuarioId         Decimal?          @db.Decimal(18, 0)
+  freteId           Decimal           @db.Decimal(18, 0)
+  TB_PEDIDOS_FRETES TB_PEDIDOS_FRETES @relation(fields: [freteId], references: [freteId], onUpdate: NoAction, map: "FK_FRETEHIST_FRETE")
+}
+
+model TB_PEDIDOS_VENCTOS_HISTORICO {
+  VENCTOSHISTID              Decimal   @db.Decimal(18, 0)
+  PED_PAG_ID                 Decimal   @id(map: "PK_PEDIDOS_VENCTOS_HISTORICO") @db.Decimal(18, 0)
+  DATAHORA                   DateTime? @db.SmallDateTime
+  USUARIOID                  Decimal?  @db.Decimal(18, 0)
+  PED_PAG_PEDIDO_ID          Decimal   @db.Decimal(18, 0)
+  PED_PAG_FORMA_PAGAMENTO_ID Decimal   @db.Decimal(18, 0)
+  PED_PAG_VAL_SEQUENCIA      Decimal?  @db.Decimal(18, 0)
+  PED_PAG_DATA_EMISSAO       DateTime  @db.SmallDateTime
+  PED_PAG_VENCIMENTO         DateTime  @db.SmallDateTime
+  PED_PAG_VALOR              Decimal   @db.Decimal(18, 2)
+  PED_PAG_VAL_PARCELA        Decimal?  @db.Decimal(18, 2)
+  PED_PAG_DOCUMENTO          String?   @db.VarChar(20)
+  USUARIO_CADASTRO_ID        Decimal   @db.Decimal(18, 0)
+  USUARIO_CADASTRO_DATA      DateTime  @db.SmallDateTime
+  UNIDADE                    Decimal   @db.Decimal(18, 0)
+  PED_NSU                    String?   @db.VarChar(20)
+  PED_AUT_CARTAO             String?   @db.VarChar(20)
+
+  @@index([PED_PAG_PEDIDO_ID], map: "IDX_PED_PAG_PEDIDO_ID")
+  @@index([PED_PAG_VENCIMENTO], map: "IDX_PED_PAG_VENCIMENTO")
+}
+
+model TB_PEDIDOS_VENDAS {
+  ped_id                              Decimal                               @id(map: "PK_CLIENTES_PEDIDOS_VENDAS") @db.Decimal(18, 0)
+  ped_nro_cartao                      String                                @db.VarChar(20)
+  ped_cliente_id                      Decimal?                              @db.Decimal(18, 0)
+  ped_recebido                        String?                               @default("n", map: "DF_TB_PEDIDOS_VENDAS_ped_recebido") @db.VarChar(10)
+  ped_valor_descontado                Decimal?                              @db.Decimal(18, 2)
+  usuario_cadastro_id                 Decimal                               @db.Decimal(18, 0)
+  usuario_cadastro_data               DateTime                              @db.DateTime
+  usuario_alteracao_id                Decimal?                              @db.Decimal(18, 0)
+  ped_usuario                         String?                               @db.VarChar(9)
+  usuario_alteracao_data              DateTime?                             @db.SmallDateTime
+  unidade                             Decimal                               @db.Decimal(18, 0)
+  set_id                              Decimal?                              @db.Decimal(18, 0)
+  status_nota                         String?                               @db.VarChar(1)
+  motivo_canc                         String?                               @db.VarChar(100)
+  usuario_cadastro_hora               String?                               @db.VarChar(10)
+  usuario_alteracao_hora              String?                               @db.VarChar(10)
+  hora_receb                          String?                               @db.VarChar(10)
+  ped_credito                         Float?                                @default(0, map: "DF_TB_PEDIDOS_VENDAS_ped_credito") @db.Money
+  Devolucao                           String?                               @db.Char(1)
+  ped_a_vista                         String?                               @db.VarChar(1)
+  trocaAposPrazo                      Int?                                  @default(0, map: "DF__TB_PEDIDO__troca__5B7A294C") @db.SmallInt
+  valorRecebido                       Decimal?                              @db.Decimal(18, 2)
+  cancelaAposPrazo                    Int?                                  @default(0, map: "DF__TB_PEDIDO__cance__0EF9CD52") @db.SmallInt
+  valorCuponsDesconto                 Decimal?                              @default(0, map: "DF__TB_PEDIDO__valor__305AC11D") @db.Decimal(18, 2)
+  valorVouchers                       Decimal?                              @default(0, map: "DF__TB_PEDIDO__valor__314EE556") @db.Decimal(18, 2)
+  origemVenda                         Int?                                  @default(0, map: "DF__TB_PEDIDO__orige__3DB4BC3B") @db.SmallInt
+  valorFrete                          Decimal?                              @db.Decimal(18, 2)
+  TB_BOLETIM_MOVIMENTOS               TB_BOLETIM_MOVIMENTOS[]
+  TB_CANCELAMENTOS                    TB_CANCELAMENTOS[]
+  TB_PEDIDOS_FRETES                   TB_PEDIDOS_FRETES[]
+  TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS[]
+  TB_PEDIDOS_VENDAS_ITENS             TB_PEDIDOS_VENDAS_ITENS[]
+  TB_PEDIDOS_VOUCHERS                 TB_PEDIDOS_VOUCHERS[]
+
+  @@index([usuario_alteracao_data], map: "data")
+  @@index([ped_cliente_id], map: "id_cliente")
+  @@index([status_nota], map: "IDX_STATUS")
+  @@index([ped_nro_cartao], map: "ix_ped_cartao")
+  @@index([usuario_cadastro_data], map: "ix_ped_data")
+  @@index([ped_recebido], map: "recebido")
+  @@index([set_id], map: "set_id")
+  @@index([unidade], map: "unidade")
+}
+
+model TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS {
+  ped_pag_id                 Decimal              @id(map: "PK_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS") @db.Decimal(18, 0)
+  ped_pag_pedido_id          Decimal              @db.Decimal(18, 0)
+  ped_pag_forma_pagamento_id Decimal              @db.Decimal(18, 0)
+  ped_pag_val_sequencia      Decimal?             @db.Decimal(18, 0)
+  ped_pag_data_emissao       DateTime             @db.SmallDateTime
+  ped_pag_vencimento         DateTime             @db.SmallDateTime
+  ped_pag_valor              Decimal              @db.Decimal(18, 2)
+  ped_pag_val_parcela        Decimal?             @db.Decimal(18, 2)
+  ped_pag_documento          String?              @db.VarChar(20)
+  usuario_cadastro_id        Decimal              @db.Decimal(18, 0)
+  usuario_cadastro_data      DateTime             @db.SmallDateTime
+  usuario_alteracao_id       Decimal?             @db.Decimal(18, 0)
+  usuario_alteracao_data     DateTime?            @db.SmallDateTime
+  unidade                    Decimal              @db.Decimal(18, 0)
+  set_id                     Decimal?             @db.Decimal(18, 0)
+  ped_nsu                    String?              @db.VarChar(20)
+  ped_aut_cartao             String?              @db.VarChar(20)
+  ped_pag_max_parcelas       Int?                 @db.SmallInt
+  ped_pag_status             String?              @db.VarChar(50)
+  n_ped_pag_id               Decimal?             @db.Decimal(18, 0)
+  TB_FORMAS_PAGAMENTOS       TB_FORMAS_PAGAMENTOS @relation(fields: [ped_pag_forma_pagamento_id], references: [for_pag_id], onUpdate: NoAction, map: "FK_PEDIDOVENCTOS_FORMASPAGTO")
+  TB_PEDIDOS_VENDAS          TB_PEDIDOS_VENDAS    @relation(fields: [ped_pag_pedido_id], references: [ped_id], onUpdate: NoAction, map: "FK_PEDIDOVENCTOS_PEDIDOS")
+  TB_SETORES                 TB_SETORES?          @relation(fields: [set_id], references: [set_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PEDIDOVENCTOS_SETORES")
+  TB_UNIDADES                TB_UNIDADES          @relation(fields: [unidade], references: [uni_id], onUpdate: NoAction, map: "FK_PEDIDOVENCTOS_UNIDADES")
+
+  @@index([ped_pag_id], map: "IDX_PED_PAG_ID")
+  @@index([ped_pag_pedido_id], map: "IDX_PED_PAG_PEDIDO_ID")
+  @@index([ped_pag_vencimento], map: "IDX_PED_PAG_VENCIMENTO")
+  @@index([ped_pag_val_sequencia], map: "IDX_SEQUENCIA")
+}
+
+model TB_PEDIDOS_VENDAS_ITENS {
+  ped_ven_ite_id             Decimal                  @id(map: "PK_PEDIDOS_VENDAS_ITENS") @db.Decimal(18, 0)
+  ped_ven_ite_pedido_id      Decimal                  @db.Decimal(18, 0)
+  ped_ven_ite_produto_id     Decimal                  @db.Decimal(18, 0)
+  ped_ven_ite_quantidade     String                   @default("1", map: "DF__TB_PEDIDO__ped_v__0940F3FC") @db.VarChar(9)
+  ped_ven_ite_desconto       Decimal                  @db.Decimal(18, 2)
+  ped_ven_ite_valor_unitario Decimal                  @db.Decimal(18, 2)
+  ped_ven_ite_valor_total    Decimal                  @db.Decimal(18, 2)
+  usuario_cadastro_id        Decimal                  @db.Decimal(18, 0)
+  usuario_cadastro_data      DateTime                 @db.SmallDateTime
+  usuario_alteracao_id       Decimal?                 @db.Decimal(18, 0)
+  usuario_alteracao_data     DateTime?                @db.SmallDateTime
+  unidade                    Decimal                  @db.Decimal(18, 0)
+  set_id                     Decimal?                 @db.Decimal(18, 0)
+  observacao                 String?                  @db.NChar(50)
+  ped_ven_ite_garantia       String?                  @db.Char(2)
+  ped_ven_ite_qtde           Decimal?                 @default(0, map: "DF__TB_PEDIDO__ped_v__0A351835") @db.Decimal(18, 0)
+  qtdeFrete                  Int?                     @db.SmallInt
+  TB_CANCELAMENTOS_ITENS     TB_CANCELAMENTOS_ITENS[]
+  TB_PEDIDOS_VENDAS          TB_PEDIDOS_VENDAS        @relation(fields: [ped_ven_ite_pedido_id], references: [ped_id], onUpdate: NoAction, map: "FK_PEDIDOITENS_PEDIDOS")
+  TB_PRODUTOS                TB_PRODUTOS              @relation(fields: [ped_ven_ite_produto_id], references: [pro_id], onUpdate: NoAction, map: "FK_PEDIDOITENS_PRODUTOS")
+  TB_SETORES                 TB_SETORES?              @relation(fields: [set_id], references: [set_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PEDIDOITENS_SETORES")
+  TB_UNIDADES                TB_UNIDADES              @relation(fields: [unidade], references: [uni_id], onUpdate: NoAction, map: "FK_PEDIDOITENS_UNIDADE")
+
+  @@index([ped_ven_ite_pedido_id], map: "IDX_PED_VEN_ITE_PEDIDO_ID")
+  @@index([ped_ven_ite_produto_id], map: "IDX_PED_VEN_ITE_PRODUTO_ID")
+  @@index([usuario_cadastro_id], map: "IDX_USUARIOCADASTROID")
+}
+
+model TB_PEDIDOS_VENDAS_TROCA {
+  ped_id_Troca Int      @id(map: "PK_TB_PEDIDOS_VENDAS_TROCA") @default(autoincrement())
+  ped_Nota     Decimal  @db.Decimal(18, 0)
+  ped_id       Decimal  @db.Decimal(18, 0)
+  pro_id       Decimal  @db.Decimal(18, 0)
+  valor        Float    @db.Money
+  Qtde         Decimal  @db.Decimal(18, 0)
+  Unidade      Decimal  @db.Decimal(18, 0)
+  usuario_id   Decimal  @db.Decimal(18, 0)
+  Data         DateTime @db.DateTime
+  set_id       Decimal? @default(0, map: "DF__TB_PEDIDO__set_i__5D2D6365") @db.Decimal(3, 0)
+
+  @@index([ped_Nota], map: "pedido")
+  @@index([pro_id], map: "produto_id")
+}
+
+model TB_PEDIDOS_VOUCHERS {
+  pedidoVoucherId   Decimal            @id(map: "PK_PEDIDOS_VOUCHERS") @db.Decimal(18, 0)
+  pedidoId          Decimal?           @db.Decimal(18, 0)
+  voucherId         Decimal?           @db.Decimal(18, 0)
+  TB_PEDIDOS_VENDAS TB_PEDIDOS_VENDAS? @relation(fields: [pedidoId], references: [ped_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PEDVOUCHER_PEDIDO")
+  TB_VOUCHERS       TB_VOUCHERS?       @relation(fields: [voucherId], references: [voucherId], onDelete: NoAction, onUpdate: NoAction, map: "FK_PEDVOUCHER_VOUCHER")
+}
+
+model TB_PERFIL {
+  per_perfil_id Decimal       @id(clustered: false, map: "PK_TB_PERFIL") @db.Decimal(18, 0)
+  per_perfil    String?       @db.NVarChar(50)
+  TB_DIREITOS   TB_DIREITOS[]
+}
+
+model TB_PLANO_CONTAS {
+  Plano_Contas_ID  Int      @id(map: "PK_TB_Plano_Contas") @default(autoincrement())
+  Codigo           String?  @db.Char(5)
+  Descricao        String?  @db.VarChar(50)
+  PlCoNume         String?  @db.VarChar(10)
+  seq_boletim      Decimal? @default(0, map: "DF__TB_Plano___seq_b__08683914") @db.Decimal(18, 0)
+  STATUS           Int?     @db.SmallInt
+  contaFinanceira  String?  @db.Char(4)
+  codContaBancaria Int?
+}
+
+model TB_PRODUCAO_TEC {
+  tec_id                                                   Decimal          @id(map: "PK_PRODUCAO_TEC") @db.Decimal(18, 0)
+  tec_cc_destino                                           Decimal          @db.Decimal(18, 0)
+  tec_setor_destino                                        Decimal?         @db.Decimal(18, 0)
+  usuario_cadastro_id                                      Decimal          @db.Decimal(18, 0)
+  usuario_cadastro_data                                    DateTime         @db.DateTime
+  usuario_alteracao_id                                     Decimal?         @db.Decimal(18, 0)
+  usuario_alteracao_data                                   DateTime?        @db.DateTime
+  tec_status                                               String?          @db.VarChar(1)
+  pro_id                                                   Decimal?         @db.Decimal(18, 0)
+  tec_obs                                                  String?          @db.VarChar(250)
+  nome_produto                                             String?          @db.VarChar(100)
+  usuario_destino_id                                       Decimal?         @default(0, map: "DF__TB_PRODUC__usuar__220CA1C6") @db.Decimal(18, 0)
+  sol_id                                                   Decimal?         @default(0, map: "DF__TB_PRODUC__sol_i__2300C5FF") @db.Decimal(18, 0)
+  tec_preco_normal                                         Decimal?         @default(0, map: "DF__TB_PRODUC__tec_p__23F4EA38") @db.Decimal(18, 2)
+  codigoax                                                 String?          @db.VarChar(20)
+  codigo                                                   String?          @db.VarChar(20)
+  tec_qtde                                                 Decimal?         @default(1, map: "DF__TB_PRODUC__tec_q__24E90E71") @db.Decimal(9, 0)
+  tec_tipo_producao                                        Int?             @default(0, map: "DF__TB_PRODUC__tec_t__25DD32AA") @db.SmallInt
+  fornecedorId                                             Decimal?         @db.Decimal(18, 0)
+  set_id                                                   Decimal?         @db.Decimal(18, 0)
+  TB_SETORES_TB_PRODUCAO_TEC_tec_cc_destinoToTB_SETORES    TB_SETORES       @relation("TB_PRODUCAO_TEC_tec_cc_destinoToTB_SETORES", fields: [tec_cc_destino], references: [set_id], onUpdate: NoAction, map: "FK_PRODUCAO_CCDESTINO")
+  TB_FORNECEDORES                                          TB_FORNECEDORES? @relation(fields: [fornecedorId], references: [for_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PRODUCAO_FORNECEDORES")
+  TB_SETORES_TB_PRODUCAO_TEC_tec_setor_destinoToTB_SETORES TB_SETORES?      @relation("TB_PRODUCAO_TEC_tec_setor_destinoToTB_SETORES", fields: [tec_setor_destino], references: [set_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PRODUCAO_SETORDESTINO")
+
+  @@index([usuario_cadastro_data], map: "IDX_PRODUCAO_CADASTRO_DATA")
+  @@index([codigo], map: "IDX_PRODUCAO_CODIGO")
+  @@index([tec_cc_destino], map: "IDX_TEC_CC_DESTINO")
+}
+
+model TB_PRODUTOS {
+  pro_id                  Decimal                   @id(map: "PK_TB_PRODUTOS") @db.Decimal(18, 0)
+  pro_familia_id          Decimal                   @db.Decimal(18, 0)
+  pro_nome                String?                   @db.VarChar(100)
+  pro_marca               String?                   @db.VarChar(25)
+  pro_modelo              String?                   @db.VarChar(30)
+  usuario_cadastro_id     Decimal                   @db.Decimal(18, 0)
+  usuario_cadastro_data   DateTime                  @db.SmallDateTime
+  usuario_alteracao_id    Decimal?                  @db.Decimal(18, 0)
+  usuario_alteracao_data  DateTime?                 @db.SmallDateTime
+  unidade                 Decimal                   @db.Decimal(18, 0)
+  pro_preco_normal        Decimal?                  @db.Decimal(18, 2)
+  pro_preco_minimo        Decimal?                  @db.Decimal(18, 2)
+  pro_fornecedor          Decimal?                  @db.Decimal(18, 0)
+  pro_codigo              String?                   @db.VarChar(20)
+  pro_preco_custo         Decimal?                  @db.Decimal(18, 2)
+  pro_nome_reduzido       String?                   @db.VarChar(25)
+  pro_codigo_fam          String?                   @db.VarChar(2)
+  pro_codigo_for          String?                   @db.VarChar(5)
+  pro_codigo_prod         String?                   @db.VarChar(5)
+  origem_doacao           String?                   @db.Char(1)
+  origem_compra           String?                   @db.Char(1)
+  destino_venda           String?                   @db.Char(1)
+  destino_manut           String?                   @db.Char(1)
+  destino_outro           String?                   @db.Char(1)
+  pro_obs                 String?                   @db.VarChar(500)
+  id_grupo                Decimal?                  @db.Decimal(18, 0)
+  cc_loja                 Decimal?                  @db.Decimal(18, 0)
+  prod_ativo              String?                   @db.Char(1)
+  Usa_Minimo              String?                   @db.Char(1)
+  prod_avaria             String?                   @db.Char(1)
+  volume                  Decimal?                  @default(1, map: "DF_TB_PRODUTOS_volume") @db.Decimal(18, 0)
+  Info                    String?                   @db.VarChar(50)
+  id_tipo                 Decimal?                  @default(0, map: "DF__TB_PRODUT__id_ti__2ECC4270") @db.Decimal(18, 0)
+  pro_codigoEAN           String?                   @db.VarChar(30)
+  pro_ctrl_estoque        String?                   @db.Char(1)
+  id_modelo               Decimal?                  @default(0, map: "DF__TB_PRODUT__id_mo__4E08EB2B") @db.Decimal(18, 0)
+  TB_CONTAINERS           TB_CONTAINERS[]
+  TB_PEDIDOS_VENDAS_ITENS TB_PEDIDOS_VENDAS_ITENS[]
+
+  @@index([prod_ativo], map: "ativo")
+  @@index([cc_loja], map: "cc_loja")
+  @@index([usuario_cadastro_data], map: "data")
+  @@index([pro_ctrl_estoque], map: "estoque")
+  @@index([pro_familia_id], map: "id_familia")
+  @@index([id_grupo], map: "id_grupo")
+  @@index([id_modelo], map: "id_modelo")
+  @@index([id_tipo], map: "id_tipo")
+  @@index([pro_codigo], map: "ix_pro_codigo")
+  @@index([pro_nome], map: "ix_pro_nome")
+}
+
+model TB_PRODUTOS_FAMILIAS {
+  pro_fam_id             Decimal   @id(map: "PK_TB_FAMILIAS") @db.Decimal(18, 0)
+  pro_fam_nome           String    @db.VarChar(45)
+  usuario_cadastro_id    Decimal   @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime  @db.SmallDateTime
+  usuario_alteracao_id   Decimal?  @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime? @db.SmallDateTime
+  unidade                Decimal   @db.Decimal(18, 0)
+  pro_fam_cod            String?   @db.VarChar(4)
+  selcod                 String?   @db.Char(1)
+  mostra                 String?   @db.Char(1)
+  pro_fam_nmostranovos   String?   @db.Char(1)
+  pro_fam_destino        String?   @db.Char(1)
+  foracirculacao         String?   @db.VarChar(2)
+  desc_ativo             Decimal?  @default(0, map: "DF__TB_PRODUT__desc___0402DD1D") @db.Decimal(18, 0)
+  desc_porc              Decimal?  @default(0, map: "DF__TB_PRODUT__desc___0F748FC9") @db.Decimal(18, 0)
+  acres_ativo            Decimal?  @default(0, map: "DF__TB_PRODUT__acres__465AB05F") @db.Decimal(18, 0)
+  acres_min              Decimal?  @default(0, map: "DF__TB_PRODUT__acres__51CC630B") @db.Decimal(18, 0)
+  acres_max              Decimal?  @default(0, map: "DF__TB_PRODUT__acres__5D3E15B7") @db.Decimal(18, 0)
+  pro_fam_status         Decimal?  @default(0, map: "DF__TB_PRODUT__pro_f__7C1A682B") @db.Decimal(1, 0)
+  pro_fam_rec            String?   @db.VarChar(1)
+  pro_fam_tipo_producao  Int?      @db.SmallInt
+}
+
+model TB_PRODUTOS_GRUPOS {
+  ID_GRUPO            Decimal               @id(map: "PK_TB_PRODUTOS_GRUPOS") @db.Decimal(18, 0)
+  NOME                String                @db.VarChar(50)
+  CODIGO              String                @db.VarChar(2)
+  grupo_rec           String?               @db.VarChar(1)
+  id_fam_old          Decimal?              @default(0, map: "DF__TB_PRODUT__id_fa__31327686") @db.Decimal(18, 0)
+  id_fam_desc         Decimal?              @default(0, map: "DF__TB_PRODUT__id_fa__3CA42932") @db.Decimal(18, 2)
+  grupo_agp           String?               @db.VarChar(30)
+  familiaId           Decimal?              @db.Decimal(18, 0)
+  status              Int?                  @default(1, map: "DF__TB_PRODUT__statu__589DBCA1") @db.SmallInt
+  TB_FORNECEDOR_GRUPO TB_FORNECEDOR_GRUPO[]
+  TB_SETOR_GRUPO      TB_SETOR_GRUPO[]
+
+  @@index([grupo_agp], map: "agp")
+}
+
+model TB_PRODUTOS_MODELOS {
+  id_modelo Decimal  @id(map: "PK_TB_PRODUTOS_MODELOS") @db.Decimal(18, 0)
+  id_tipo   Decimal? @db.Decimal(18, 0)
+  modelo    String?  @db.VarChar(25)
+  status    Int?     @default(1, map: "DF__TB_PRODUT__statu__57A99868") @db.SmallInt
+}
+
+model TB_PRODUTOS_SEQ {
+  id_Seq     Decimal  @id(map: "PK_TB_PRODUTOS_SEQ") @db.Decimal(18, 0)
+  set_id     Decimal  @db.Decimal(18, 0)
+  seq        Decimal  @db.Decimal(18, 0)
+  set_id_Rec Decimal? @default(0, map: "DF_TB_PRODUTOS_SEQ_set_id_Rec") @db.Decimal(18, 0)
+  set_usado  Decimal? @default(0, map: "DF__TB_PRODUT__set_u__11DD5BDD") @db.Decimal(18, 0)
+}
+
+model TB_PRODUTOS_TIPO {
+  id_tipo Decimal @id(map: "PK_TB_PRODUTOS_TIPO") @db.Decimal(18, 0)
+  tipo    String  @db.VarChar(50)
+  status  Int?    @default(1, map: "DF__TB_PRODUT__statu__56B5742F") @db.SmallInt
+}
+
+model TB_RECEITAS_ANEXOS {
+  receitaAnexoId        Int                @id(map: "PK_RECEITAANEXO") @default(autoincrement())
+  descricao             String?            @db.VarChar(255)
+  nomeArquivo           String?            @db.VarChar(255)
+  extensao              String?            @db.VarChar(10)
+  anexo                 Bytes?
+  usuario_cadastro_id   Decimal?           @db.Decimal(18, 0)
+  usuario_cadastro_data DateTime?          @db.SmallDateTime
+  receitaId             Decimal?           @db.Decimal(18, 0)
+  TB_RECEITAS_CAIXA     TB_RECEITAS_CAIXA? @relation(fields: [receitaId], references: [receitaId], onDelete: NoAction, onUpdate: NoAction, map: "FK_RECEITAANEXO_1")
+}
+
+model TB_RECEITAS_CAIXA {
+  receitaId              Decimal                 @id(map: "PK_RECEITASCAIXA") @db.Decimal(18, 0)
+  dataEmissao            DateTime?               @db.Date
+  valor                  Decimal?                @db.Decimal(18, 2)
+  unidadeid              Decimal?                @db.Decimal(18, 0)
+  usuario_cadastro_id    Decimal?                @db.Decimal(18, 0)
+  usuario_cadastro_data  DateTime?               @db.SmallDateTime
+  usuario_alteracao_id   Decimal?                @db.Decimal(18, 0)
+  usuario_alteracao_data DateTime?               @db.SmallDateTime
+  tiporeceitaid          Decimal?                @db.Decimal(18, 0)
+  setorid                Decimal?                @db.Decimal(18, 0)
+  status                 Int?                    @default(1, map: "DF__TB_RECEIT__statu__7F827F98") @db.SmallInt
+  TB_BOLETIM_MOVIMENTOS  TB_BOLETIM_MOVIMENTOS[]
+  TB_RECEITAS_ANEXOS     TB_RECEITAS_ANEXOS[]
+  TB_TIPOS_RECEITA       TB_TIPOS_RECEITA?       @relation(fields: [tiporeceitaid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_RECEITASCAIXA_1")
+  TB_SETORES             TB_SETORES?             @relation(fields: [setorid], references: [set_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_RECEITASCAIXA_2")
+}
+
+model TB_SETOR_GRUPO {
+  setorGrupoId       Decimal             @id(map: "TB_SETOR_GRUPO_PK") @db.Decimal(18, 0)
+  setorId            Decimal?            @db.Decimal(18, 0)
+  grupoId            Decimal?            @db.Decimal(18, 0)
+  dataInsercao       DateTime?           @db.DateTime
+  usuarioInsercao    Decimal?            @db.Decimal(18, 0)
+  TB_PRODUTOS_GRUPOS TB_PRODUTOS_GRUPOS? @relation(fields: [grupoId], references: [ID_GRUPO], onDelete: NoAction, onUpdate: NoAction, map: "TB_SETOR_GRUPO_TB_PRODUTOS_GRUPOS_FK")
+  TB_SETORES         TB_SETORES?         @relation(fields: [setorId], references: [set_id], onDelete: NoAction, onUpdate: NoAction, map: "TB_SETOR_GRUPO_TB_SETORES_FK")
+}
+
+model TB_SETORES {
+  set_id                                                        Decimal                               @id(map: "PK_TB_SETORES") @db.Decimal(18, 0)
+  set_nome                                                      String                                @db.VarChar(45)
+  set_descricao                                                 String?                               @db.VarChar(8000)
+  set_cc                                                        String                                @db.VarChar(13)
+  usuario_cadastro_id                                           Decimal                               @db.Decimal(18, 0)
+  usuario_cadastro_data                                         DateTime                              @db.SmallDateTime
+  usuario_alteracao_id                                          Decimal?                              @db.Decimal(18, 0)
+  usuario_alteracao_data                                        DateTime?                             @db.SmallDateTime
+  unidade                                                       Decimal                               @db.Decimal(18, 0)
+  set_superior                                                  String?                               @db.Char(1)
+  set_venda                                                     String?                               @db.Char(1)
+  set_manut                                                     String?                               @db.Char(1)
+  set_adm                                                       String?                               @db.Char(1)
+  set_nomereduz                                                 String?                               @db.VarChar(15)
+  set_unidade                                                   Decimal?                              @db.Decimal(18, 0)
+  set_CCPaiId                                                   Decimal?                              @db.Decimal(18, 0)
+  set_Evento                                                    Decimal?                              @db.Decimal(18, 0)
+  set_nome_INI                                                  String?                               @db.VarChar(2)
+  set_area                                                      Decimal?                              @default(0, map: "DF__TB_SETORE__set_a__4475637F") @db.Decimal(18, 0)
+  set_venda_desc                                                Decimal?                              @default(0, map: "DF__TB_SETORE__set_v__3587EFB1") @db.Decimal(3, 0)
+  meta_producao                                                 Decimal?                              @db.Decimal(18, 0)
+  meta_vendas                                                   Decimal?                              @db.Decimal(18, 2)
+  set_tipo_movimento                                            Int?                                  @db.SmallInt
+  meta_producao_dia                                             Decimal?                              @db.Decimal(9, 0)
+  SET_PERMITEDESPCAIXA                                          Int?                                  @db.SmallInt
+  set_status                                                    Int?                                  @default(1, map: "DF__TB_SETORE__set_s__5A860513") @db.SmallInt
+  TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS                           TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS[]
+  TB_PEDIDOS_VENDAS_ITENS                                       TB_PEDIDOS_VENDAS_ITENS[]
+  TB_PRODUCAO_TEC_TB_PRODUCAO_TEC_tec_cc_destinoToTB_SETORES    TB_PRODUCAO_TEC[]                     @relation("TB_PRODUCAO_TEC_tec_cc_destinoToTB_SETORES")
+  TB_PRODUCAO_TEC_TB_PRODUCAO_TEC_tec_setor_destinoToTB_SETORES TB_PRODUCAO_TEC[]                     @relation("TB_PRODUCAO_TEC_tec_setor_destinoToTB_SETORES")
+  TB_RECEITAS_CAIXA                                             TB_RECEITAS_CAIXA[]
+  TB_SETOR_GRUPO                                                TB_SETOR_GRUPO[]
+
+  @@index([set_cc], map: "ix_set_cc")
+}
+
+model TB_SORTEIOS {
+  sorteioId     Decimal      @id(map: "PK_SORTEIOS") @db.Decimal(18, 0)
+  dataHora      DateTime?    @db.DateTime
+  dataIniVendas DateTime?    @db.Date
+  dataFimVendas DateTime?    @db.Date
+  tipoCliente   Int?         @db.SmallInt
+  chances       Int?         @db.SmallInt
+  valorMinimo   Decimal?     @db.Decimal(18, 2)
+  status        Int?         @default(1, map: "DF__TB_SORTEI__statu__731CA8B3") @db.SmallInt
+  clienteId     Decimal?     @db.Decimal(18, 0)
+  unidadeId     Decimal?     @db.Decimal(18, 0)
+  usuarioId     Decimal?     @db.Decimal(18, 0)
+  voucherId     Decimal?     @db.Decimal(18, 0)
+  TB_CLIENTES   TB_CLIENTES? @relation(fields: [clienteId], references: [cli_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_SORTEIOS_1")
+  TB_UNIDADES   TB_UNIDADES? @relation(fields: [unidadeId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_SORTEIOS_2")
+  TB_USUARIOS   TB_USUARIOS? @relation(fields: [usuarioId], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_SORTEIOS_3")
+  TB_VOUCHERS   TB_VOUCHERS? @relation(fields: [voucherId], references: [voucherId], onDelete: NoAction, onUpdate: NoAction, map: "FK_SORTEIOS_4")
+}
+
+model TB_TIPO_COMPROVANTE {
+  id_tipo_comp    Decimal @id(map: "PK_TB_TIPO_COMPROVANTE") @db.Decimal(10, 0)
+  hp_tipo_comp    String? @db.Char(4)
+  descr_tipo_comp String? @db.VarChar(50)
+}
+
+model TB_TIPOS_RECEITA {
+  id                    Decimal                 @id(map: "PK_TB_TIPOS_RECEITA") @db.Decimal(18, 0)
+  descricao             String?                 @db.VarChar(255)
+  status                Int?                    @default(1, map: "DF__TB_TIPOS___statu__6009D43F") @db.SmallInt
+  planoContas           String?                 @db.Char(4)
+  histPadraoId          String?                 @db.Char(3)
+  centroCustosObrig     Int?                    @default(1, map: "DF__TB_TIPOS___centr__66B6D1CE") @db.SmallInt
+  utilizaCentroCustos   Int?                    @default(1, map: "DF__TB_TIPOS___utili__67AAF607") @db.SmallInt
+  TB_BOLETIM_MOVIMENTOS TB_BOLETIM_MOVIMENTOS[]
+  TB_RECEITAS_CAIXA     TB_RECEITAS_CAIXA[]
+}
+
+model TB_TRANSFERENCIA_HISTORICO {
+  transf_id_his         Decimal   @id(map: "PK_TB_TRANSFERENCIA_HISTORICO") @db.Decimal(18, 0)
+  transf_id             Decimal?  @db.Decimal(18, 0)
+  transf_status         String?   @db.Char(1)
+  usuario_cadastro_id   Decimal?  @db.Decimal(18, 0)
+  usuario_cadastro_data DateTime? @db.DateTime
+  transf_obs            String?   @db.VarChar(250)
+
+  @@index([transf_id], map: "id_transf")
+}
+
+model TB_TRANSFERENCIA_PROD {
+  transf_id                                                       Decimal      @id(map: "PK_TB_TRANSFERENCIA_PROD") @db.Decimal(18, 0)
+  transf_cc_origem                                                Decimal?     @db.Decimal(18, 0)
+  transf_cc_destino                                               Decimal?     @db.Decimal(18, 0)
+  transf_data_emissao                                             DateTime?    @db.DateTime
+  transf_data_fachamento                                          DateTime?    @db.DateTime
+  transf_motivo_cancela                                           String?      @db.VarChar(255)
+  transf_id_usu_cancela                                           Decimal?     @db.Decimal(18, 0)
+  usuario_cadastro_id                                             Decimal?     @db.Decimal(18, 0)
+  usuario_cadastro_data                                           DateTime?    @db.DateTime
+  usuario_alteracao_id                                            Decimal?     @db.Decimal(18, 0)
+  usuario_alteracao_data                                          DateTime?    @db.DateTime
+  transf_motorista                                                String?      @default(" ", map: "DF_TB_TRANSFERENCIA_PROD_transf_motorista") @db.VarChar(250)
+  transf_veiculo                                                  String?      @default(" ", map: "DF_TB_TRANSFERENCIA_PROD_transf_veiculo") @db.VarChar(100)
+  transf_add                                                      Decimal?     @default(0, map: "DF_TB_TRANSFERENCIA_PROD_transf_add") @db.Decimal(18, 0)
+  transf_lacres                                                   String?      @db.VarChar(100)
+  transf_cc_destino_final                                         Decimal?     @default(0, map: "DF__TB_TRANSF__trans__271A3C8C") @db.Decimal(18, 0)
+  qtde_itens                                                      Decimal?     @db.Decimal(18, 0)
+  transf_referencia                                               String?      @db.VarChar(50)
+  transf_status                                                   String?      @db.Char(1)
+  unidadeOrigemId                                                 Decimal?     @db.Decimal(18, 0)
+  unidadeDestinoId                                                Decimal?     @db.Decimal(18, 0)
+  TB_UNIDADES_TB_TRANSFERENCIA_PROD_unidadeOrigemIdToTB_UNIDADES  TB_UNIDADES? @relation("TB_TRANSFERENCIA_PROD_unidadeOrigemIdToTB_UNIDADES", fields: [unidadeOrigemId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TRANSFERENCIA_1")
+  TB_UNIDADES_TB_TRANSFERENCIA_PROD_unidadeDestinoIdToTB_UNIDADES TB_UNIDADES? @relation("TB_TRANSFERENCIA_PROD_unidadeDestinoIdToTB_UNIDADES", fields: [unidadeDestinoId], references: [uni_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TRANSFERENCIA_2")
+
+  @@index([usuario_cadastro_data], map: "data")
+  @@index([transf_cc_destino], map: "destino")
+  @@index([transf_data_fachamento], map: "dt_fechamento")
+  @@index([transf_data_emissao], map: "dte")
+  @@index([transf_cc_origem], map: "origem")
+}
+
+model TB_TRANSFERENCIA_PROD_ITENS {
+  prod_transf_id               Decimal  @id(map: "PK_TB_TRANSFERENCIA_PROD_ITENS") @db.Decimal(18, 0)
+  prod_transf_produto_id       Decimal  @db.Decimal(18, 0)
+  prod_transf_quantidade       Decimal  @db.Decimal(18, 0)
+  prod_transf_obs              String?  @db.VarChar(255)
+  prod_transf_altera_id        Decimal? @db.Decimal(18, 0)
+  prod_transf_transferencia_id Decimal  @db.Decimal(18, 0)
+  id_for                       Decimal? @db.Decimal(18, 0)
+  id_prod_transf               Decimal? @db.Decimal(18, 0)
+  prod_transf_valor            Decimal? @default(0, map: "DF__TB_TRANSF__prod___42BA2FA2") @db.Decimal(18, 2)
+  prod_transf_defeito          Boolean? @default(false, map: "DF__TB_TRANSF__prod___10AD0B9A")
+
+  @@index([prod_transf_produto_id], map: "itens_produtos")
+  @@index([prod_transf_transferencia_id], map: "n_transf")
+  @@index([id_prod_transf], map: "prod_transf")
+}
+
+model TB_UNIDADES {
+  uni_id                                                                    Decimal                               @id(map: "PK_TB_UNIDADES") @db.Decimal(18, 0)
+  uni_nome_fantasia                                                         String                                @db.VarChar(85)
+  uni_razao_social                                                          String                                @db.VarChar(85)
+  uni_endereco_cep                                                          String                                @db.VarChar(10)
+  uni_endereco_numero                                                       String                                @db.VarChar(8)
+  uni_endereco_complemento                                                  String?                               @db.VarChar(30)
+  uni_contato                                                               String?                               @db.VarChar(15)
+  uni_cnpj                                                                  String                                @db.VarChar(14)
+  usuario_cadastro_id                                                       Decimal                               @db.Decimal(18, 0)
+  usuario_cadastro_data                                                     DateTime                              @db.SmallDateTime
+  usuario_alteracao_id                                                      Decimal?                              @db.Decimal(18, 0)
+  usuario_alteracao_data                                                    DateTime?                             @db.SmallDateTime
+  unidade                                                                   Decimal?                              @db.Decimal(18, 0)
+  codunidade                                                                String?                               @db.VarChar(3)
+  uni_endereco_logradouro                                                   String?                               @db.Char(40)
+  uni_endereco_bairro                                                       String?                               @db.Char(40)
+  uni_endereco_cidade                                                       String?                               @db.Char(20)
+  uni_endereco_Estado                                                       String?                               @db.Char(2)
+  novo_tipo                                                                 String?                               @db.Char(5)
+  uni_OBS                                                                   String?                               @db.NVarChar(150)
+  uni_verba                                                                 String?                               @db.Char(10)
+  caixa                                                                     Decimal?                              @db.Decimal(18, 0)
+  set_cc                                                                    String?                               @db.VarChar(15)
+  set_id                                                                    Decimal?                              @db.Decimal(18, 0)
+  set_nome_INI                                                              String?                               @db.VarChar(2)
+  set_nome_INI_Rec                                                          String?                               @db.VarChar(1)
+  banco_finan                                                               Int?
+  uni_iptef                                                                 String?                               @db.VarChar(20)
+  uni_codemp                                                                String?                               @db.VarChar(20)
+  uni_desc_folha                                                            String?                               @db.Char(1)
+  uni_pagto_elet                                                            String?                               @db.VarChar(1)
+  uni_rec_auto                                                              String?                               @db.VarChar(1)
+  uni_conf_SegVia                                                           String?                               @db.VarChar(1)
+  uni_opcao_tef                                                             Decimal?                              @default(0, map: "DF__TB_UNIDAD__uni_o__33A1421C") @db.Decimal(18, 0)
+  uni_texto_opcao_tef                                                       String?                               @db.VarChar(30)
+  uni_confere_transf                                                        Int?                                  @db.SmallInt
+  cidadeId                                                                  Int?
+  uni_status                                                                Int?                                  @default(1, map: "DF__TB_UNIDAD__uni_s__5991E0DA") @db.SmallInt
+  uni_confirma_receb                                                        Int?                                  @default(1, map: "DF__TB_UNIDAD__uni_c__603EDE69") @db.SmallInt
+  efetuaVendas                                                              Int?                                  @default(0, map: "DF__TB_UNIDAD__efetu__64CE895C") @db.SmallInt
+  receitasDeptosDiversos                                                    Int?                                  @default(0, map: "DF__TB_UNIDAD__recei__65C2AD95") @db.SmallInt
+  nomeGerente                                                               String?                               @db.VarChar(255)
+  planoContasVendas                                                         String?                               @db.Char(4)
+  hpVendas                                                                  String?                               @db.Char(3)
+  pertenceMercatudo                                                         Int?                                  @default(1, map: "DF__TB_UNIDAD__perte__6F4C17CF") @db.SmallInt
+  TB_CANCELAMENTOS                                                          TB_CANCELAMENTOS[]
+  TB_CONTAINERS_TB_CONTAINERS_unidadeDestinoIdToTB_UNIDADES                 TB_CONTAINERS[]                       @relation("TB_CONTAINERS_unidadeDestinoIdToTB_UNIDADES")
+  TB_CONTAINERS_TB_CONTAINERS_unidadeOrigemIdToTB_UNIDADES                  TB_CONTAINERS[]                       @relation("TB_CONTAINERS_unidadeOrigemIdToTB_UNIDADES")
+  TB_DESCONTO                                                               TB_DESCONTO[]
+  TB_ENTREGAS                                                               TB_ENTREGAS[]
+  TB_FECHA_CAIXA                                                            TB_FECHA_CAIXA[]
+  TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS                                       TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS[]
+  TB_PEDIDOS_VENDAS_ITENS                                                   TB_PEDIDOS_VENDAS_ITENS[]
+  TB_SORTEIOS                                                               TB_SORTEIOS[]
+  TB_TRANSFERENCIA_PROD_TB_TRANSFERENCIA_PROD_unidadeOrigemIdToTB_UNIDADES  TB_TRANSFERENCIA_PROD[]               @relation("TB_TRANSFERENCIA_PROD_unidadeOrigemIdToTB_UNIDADES")
+  TB_TRANSFERENCIA_PROD_TB_TRANSFERENCIA_PROD_unidadeDestinoIdToTB_UNIDADES TB_TRANSFERENCIA_PROD[]               @relation("TB_TRANSFERENCIA_PROD_unidadeDestinoIdToTB_UNIDADES")
+  TB_USUARIOS_UNIDADES                                                      TB_USUARIOS_UNIDADES[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TB_UNIDADES_MAILS {
+  uni_mail_unidade_id                                             Decimal      @db.Decimal(18, 0)
+  uni_mail_nome                                                   String       @db.VarChar(50)
+  usuario_cadastro_id                                             Decimal      @db.Decimal(18, 0)
+  usuario_cadastro_data                                           DateTime     @db.SmallDateTime
+  usuario_alteracao_id                                            Decimal?     @db.Decimal(18, 0)
+  usuario_alteracao_data                                          DateTime?    @db.SmallDateTime
+  unidade                                                         Decimal?     @db.Decimal(18, 0)
+  TB_USUARIOS_TB_UNIDADES_MAILS_usuario_cadastro_idToTB_USUARIOS  TB_USUARIOS  @relation("TB_UNIDADES_MAILS_usuario_cadastro_idToTB_USUARIOS", fields: [usuario_cadastro_id], references: [usu_id], onUpdate: NoAction, map: "FK_TB_UNIDADES_MAILS_TB_USUARIOS")
+  TB_USUARIOS_TB_UNIDADES_MAILS_usuario_alteracao_idToTB_USUARIOS TB_USUARIOS? @relation("TB_UNIDADES_MAILS_usuario_alteracao_idToTB_USUARIOS", fields: [usuario_alteracao_id], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TB_UNIDADES_MAILS_TB_USUARIOS1")
+
+  @@ignore
+}
+
+model TB_UNIDADES_TELEFONES {
+  uni_tel_unidade_id                                                  Decimal      @id(map: "PK_TB_UNIDADES_TELEFONES") @db.Decimal(18, 0)
+  uni_tel_ddd                                                         String       @db.NVarChar(2)
+  uni_tel_numero                                                      String       @db.NVarChar(10)
+  uni_tel_Observacao                                                  String?      @db.VarChar(8000)
+  usuario_cadastro_id                                                 Decimal?     @db.Decimal(18, 0)
+  usuario_cadastro_data                                               DateTime?    @db.SmallDateTime
+  usuario_alteracao_id                                                Decimal?     @db.Decimal(18, 0)
+  usuario_alteracao_data                                              DateTime?    @db.SmallDateTime
+  unidade                                                             Decimal?     @db.Decimal(18, 0)
+  TB_USUARIOS_TB_UNIDADES_TELEFONES_usuario_cadastro_idToTB_USUARIOS  TB_USUARIOS? @relation("TB_UNIDADES_TELEFONES_usuario_cadastro_idToTB_USUARIOS", fields: [usuario_cadastro_id], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TB_UNIDADES_TELEFONES_TB_USUARIOS")
+  TB_USUARIOS_TB_UNIDADES_TELEFONES_usuario_alteracao_idToTB_USUARIOS TB_USUARIOS? @relation("TB_UNIDADES_TELEFONES_usuario_alteracao_idToTB_USUARIOS", fields: [usuario_alteracao_id], references: [usu_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TB_UNIDADES_TELEFONES_TB_USUARIOS1")
+}
+
+model TB_USUARIOS {
+  usu_id                                                                        Decimal                 @id(map: "PK_TB_USUARIOS") @db.Decimal(18, 0)
+  usu_funcionario_id                                                            Decimal                 @db.Decimal(18, 0)
+  usu_perfil_id                                                                 Decimal                 @db.Decimal(18, 0)
+  usu_login                                                                     String                  @db.VarChar(20)
+  usu_senha                                                                     String?                 @db.VarChar(20)
+  usuario_cadastro_id                                                           Decimal                 @db.Decimal(18, 0)
+  usuario_cadastro_data                                                         DateTime                @db.SmallDateTime
+  usuario_alteracao_id                                                          Decimal?                @db.Decimal(18, 0)
+  usuario_alteracao_data                                                        DateTime?               @db.SmallDateTime
+  unidade                                                                       Decimal                 @db.Decimal(18, 0)
+  usu_setor                                                                     Decimal?                @db.Decimal(18, 0)
+  usu_nome                                                                      String?                 @db.Char(50)
+  usu_ativo                                                                     String?                 @db.Char(1)
+  usu_vendedor                                                                  String?                 @db.Char(1)
+  usu_ReimprimeNota                                                             String?                 @db.Char(1)
+  usu_desc_venda                                                                Decimal?                @default(0, map: "DF__TB_USUARI__usu_d__48645517") @db.Decimal(18, 2)
+  usu_perc_vendas                                                               Decimal?                @default(0, map: "DF__TB_USUARI__usu_p__7E892B63") @db.Decimal(9, 2)
+  senhaHash                                                                     String?                 @db.VarChar(80)
+  dataSenha                                                                     DateTime?               @db.DateTime
+  TB_CANCELAMENTOS                                                              TB_CANCELAMENTOS[]
+  TB_CONTAINERS_TB_CONTAINERS_usuarioAlteracaoToTB_USUARIOS                     TB_CONTAINERS[]         @relation("TB_CONTAINERS_usuarioAlteracaoToTB_USUARIOS")
+  TB_CONTAINERS_TB_CONTAINERS_usuarioCadastroToTB_USUARIOS                      TB_CONTAINERS[]         @relation("TB_CONTAINERS_usuarioCadastroToTB_USUARIOS")
+  TB_ENTREGAS                                                                   TB_ENTREGAS[]
+  TB_ENTREGAS_FRETES                                                            TB_ENTREGAS_FRETES[]
+  TB_SORTEIOS                                                                   TB_SORTEIOS[]
+  TB_UNIDADES_MAILS_TB_UNIDADES_MAILS_usuario_cadastro_idToTB_USUARIOS          TB_UNIDADES_MAILS[]     @relation("TB_UNIDADES_MAILS_usuario_cadastro_idToTB_USUARIOS") @ignore
+  TB_UNIDADES_MAILS_TB_UNIDADES_MAILS_usuario_alteracao_idToTB_USUARIOS         TB_UNIDADES_MAILS[]     @relation("TB_UNIDADES_MAILS_usuario_alteracao_idToTB_USUARIOS") @ignore
+  TB_UNIDADES_TELEFONES_TB_UNIDADES_TELEFONES_usuario_cadastro_idToTB_USUARIOS  TB_UNIDADES_TELEFONES[] @relation("TB_UNIDADES_TELEFONES_usuario_cadastro_idToTB_USUARIOS")
+  TB_UNIDADES_TELEFONES_TB_UNIDADES_TELEFONES_usuario_alteracao_idToTB_USUARIOS TB_UNIDADES_TELEFONES[] @relation("TB_UNIDADES_TELEFONES_usuario_alteracao_idToTB_USUARIOS")
+  TB_USUARIOS_UNIDADES                                                          TB_USUARIOS_UNIDADES[]
+
+  @@index([usu_funcionario_id], map: "IDX_FUNCIONARIOID")
+}
+
+model TB_USUARIOS_UNIDADES {
+  usuarioUnidadeId Decimal     @id(map: "PK_USUARIOS_UNIDADES") @db.Decimal(18, 0)
+  usuarioId        Decimal     @db.Decimal(18, 0)
+  unidadeId        Decimal     @db.Decimal(18, 0)
+  TB_UNIDADES      TB_UNIDADES @relation(fields: [unidadeId], references: [uni_id], onUpdate: NoAction, map: "PK_USUARIOSUNIDADES_UNIDADES")
+  TB_USUARIOS      TB_USUARIOS @relation(fields: [usuarioId], references: [usu_id], onUpdate: NoAction, map: "PK_USUARIOSUNIDADES_USUARIOS")
+}
+
+model TB_VOUCHERS {
+  voucherId           Decimal               @id(map: "PK_VOUCHERS") @db.Decimal(18, 0)
+  dataInsercao        DateTime?             @db.DateTime
+  dataValidade        DateTime?             @db.DateTime
+  origem              Int?                  @db.SmallInt
+  acaoPromoId         Decimal?              @db.Decimal(18, 0)
+  vendaSiteId         Decimal?              @db.Decimal(18, 0)
+  cancelamentoId      Decimal?              @db.Decimal(18, 0)
+  tipo                Int?                  @db.SmallInt
+  valorCusto          Decimal?              @db.Decimal(18, 2)
+  valorInicial        Decimal?              @db.Decimal(18, 2)
+  valorRestante       Decimal?              @db.Decimal(18, 2)
+  status              Int?                  @default(1, map: "DF__TB_VOUCHE__statu__36139A73") @db.SmallInt
+  clienteId           Decimal?              @db.Decimal(18, 0)
+  solicitante         String?               @db.VarChar(150)
+  TB_PEDIDOS_VOUCHERS TB_PEDIDOS_VOUCHERS[]
+  TB_SORTEIOS         TB_SORTEIOS[]
+  TB_ACOESPROMO       TB_ACOESPROMO?        @relation(fields: [acaoPromoId], references: [acaoPromoId], onDelete: NoAction, onUpdate: NoAction, map: "FK_VOUCHER_ACAOPROMO")
+  TB_CANCELAMENTOS    TB_CANCELAMENTOS?     @relation(fields: [cancelamentoId], references: [cancelamentoId], onDelete: NoAction, onUpdate: NoAction, map: "FK_VOUCHER_CANCELAMENTO")
+  TB_CLIENTES         TB_CLIENTES?          @relation(fields: [clienteId], references: [cli_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_VOUCHER_CLIENTE")
+}
