@@ -11,7 +11,7 @@ const withPWA = withPWAInit({
 
 /** @type {import("next").NextConfig} */
 const config = {
-  basePath: "/docs",
+  basePath: "/mercatudo",
   eslint: {
     ignoreDuringBuilds: true,
   },
