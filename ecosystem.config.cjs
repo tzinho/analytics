@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "callcenter",
+      name: "mercatudo",
       script: "node_modules/next/dist/bin/next",
       args: "start",
       instances: "max",
