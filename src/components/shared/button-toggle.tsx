@@ -47,7 +47,7 @@ const ButtonContent = ({
       className={cn(
         "text-sm transition-colors duration-300",
         className,
-        isActive ? "text-white" : "text-white/90",
+        isActive ? "text-white" : "text-black",
       )}
     >
       {children}
@@ -57,9 +57,9 @@ const ButtonContent = ({
 
 export const ButtonToggle = ({ date, setView }: ButtonTriggerProps) => {
   return (
-    <div className="bg-primary relative flex h-10 w-60 rounded-[100px] lg:h-10">
+    <div className="relative flex h-10 w-60 rounded-[100px] bg-black/10 lg:h-10">
       <div
-        className="absolute top-0 left-0 h-full w-1/3 transform rounded-[40px] bg-green-600 duration-300 ease-out"
+        className="bg-primary absolute top-0 left-0 h-full w-1/3 transform rounded-[40px] duration-300 ease-out"
         style={{
           transform:
             date === Dates.Day

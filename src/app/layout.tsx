@@ -1,10 +1,10 @@
 import "~/styles/globals.css";
 
 import { type Metadata, type Viewport } from "next";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import { fontSans, fontMono } from "~/config/fonts";
-import { Navbar } from "~/components/shared/layout/navbar";
 import { ThemeProvider } from "~/components/theme-provider";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${fontSans.variable} ${fontMono.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
       <body>
@@ -33,7 +33,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <Navbar /> */}
           <TRPCReactProvider>{children}</TRPCReactProvider>
         </ThemeProvider>
       </body>

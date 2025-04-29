@@ -3,6 +3,7 @@
  * for Docker builds.
  */
 import withPWAInit from "@ducanh2912/next-pwa";
+
 import "./src/env.js";
 
 const withPWA = withPWAInit({
@@ -11,7 +12,7 @@ const withPWA = withPWAInit({
 
 /** @type {import("next").NextConfig} */
 const config = {
-  basePath: "/mercatudo",
+  // basePath: "/mercatudo",
   eslint: {
     ignoreDuringBuilds: true,
   },

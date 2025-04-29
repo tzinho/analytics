@@ -3,13 +3,23 @@ export type Store = {
   CC: string;
 };
 
-export type Sale = {
-  CC_CODIGO: number;
+export type SaleGroup = {
   CC: string;
+  CC_CODIGO: number;
   ACUMULADO: number;
   UNIDADE: number;
   VENDAS: number;
 };
+
+export type Sale = {
+  PED_ID: string;
+  UNI_RAZAO_SOCIAL: string;
+  VALOR: number;
+};
+
+export type SaleCancelled = {
+  MOTIVO_CANC: string;
+} & Sale;
 
 export enum Dates {
   Day,

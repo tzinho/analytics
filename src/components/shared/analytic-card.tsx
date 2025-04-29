@@ -12,7 +12,7 @@ import { cn } from "~/lib/utils";
 export const AnalyticCard: React.FC<React.ComponentProps<"div">> = ({
   children,
 }) => {
-  return <Card className="w-full max-w-[350px]">{children}</Card>;
+  return <Card className="w-full">{children}</Card>;
 };
 
 export const AnalyticCardTitle = ({
@@ -32,7 +32,9 @@ export const AnalyticCardContent: React.FC<React.ComponentProps<"div">> = ({
 }) => {
   return (
     <CardContent>
-      <span className={cn("text-3xl font-bold", className)}>{children}</span>
+      <span className={cn("w-full text-3xl font-bold", className)}>
+        {children}
+      </span>
     </CardContent>
   );
 };

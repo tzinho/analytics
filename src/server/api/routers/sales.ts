@@ -1,12 +1,43 @@
 import { z } from "zod";
 import { sub } from "date-fns";
-
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { Dates, type Sale, type Store } from "~/types/sales";
-import { generateBetweenDates, toDate } from "~/lib/utils";
 import { Prisma } from "@prisma/client";
 
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  Dates,
+  type Sale,
+  type SaleCancelled,
+  type SaleGroup,
+  type Store,
+} from "~/types/sales";
+import { generateBetweenDates, toDate } from "~/lib/utils";
+
 export const salesRouter = createTRPCRouter({
+  sales: publicProcedure
+    .input(
+      z.object({
+        storeSearch: z.string().optional(),
+        dateSearch: z.nativeEnum(Dates),
+      }),
+    )
+    .query(async ({ ctx, input: { storeSearch, dateSearch } }) => {
+      const [dateInitial, dateFinal] = generateBetweenDates(dateSearch);
+
+      //for_pag_nome
+      //status_nota R | C | ""
+      //uni_razao_social
+      const data = await ctx.db.$queryRaw<Sale[]>`
+        SELECT *, SUM(PV.PED_VALOR_DESCONTADO - PV.PED_CREDITO) AS ACUMULADO FROM TB_PEDIDOS_VENDAS PV
+        INNER JOIN TB_PEDIDOS_VENDAS_FORMAS_PAGAMENTOS T2 ON (PV.PED_ID = T2.PED_PAG_PEDIDO_ID)
+				INNER JOIN TB_FORMAS_PAGAMENTOS T3 ON (T2.PED_PAG_FORMA_PAGAMENTO_ID = T3.FOR_PAG_ID)
+        INNER JOIN TB_UNIDADES U ON (PV.UNIDADE = U.UNI_ID)
+        WHERE COALESCE(PV.STATUS_NOTA, '') <> ''
+        AND PV.USUARIO_CADASTRO_DATA BETWEEN ${dateInitial} AND ${dateFinal}
+        AND U.PERTENCEMERCATUDO = 1 ${storeSearch ? Prisma.sql`AND S.SET_ID = ${storeSearch}` : Prisma.empty}
+        ORDER BY PV.USUARIO_CADASTRO_DATA DESC
+      `;
+      return data;
+    }),
   salesCancelled: publicProcedure
     .input(
       z.object({
@@ -16,7 +47,7 @@ export const salesRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input: { storeSearch, dateSearch } }) => {
       const [dateInitial, dateFinal] = generateBetweenDates(dateSearch);
-      const data = await ctx.db.$queryRaw<Sale[]>`
+      const data = await ctx.db.$queryRaw<SaleCancelled[]>`
         SELECT S.SET_ID AS CC_CODIGO, S.SET_NOME AS CC, SUM(PV.PED_VALOR_DESCONTADO - PV.PED_CREDITO) AS ACUMULADO, PV.UNIDADE, COUNT(*) AS VENDAS, UPPER(LTRIM(RTRIM(COALESCE(PV.MOTIVO_CANC, 'SEM MOTIVO')))) AS MOTIVO_CANC FROM TB_PEDIDOS_VENDAS PV
         INNER JOIN TB_SETORES S ON (PV.SET_ID = S.SET_ID)
         INNER JOIN DBO.TB_UNIDADES U ON (S.SET_UNIDADE = U.UNI_ID)
@@ -36,7 +67,7 @@ export const salesRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input: { storeSearch, dateSearch } }) => {
       const [dateInitial, dateFinal] = generateBetweenDates(dateSearch);
-      const data = await ctx.db.$queryRaw<Sale[]>`
+      const data = await ctx.db.$queryRaw<SaleGroup[]>`
         SELECT S.SET_ID AS CC_CODIGO, S.SET_NOME AS CC, SUM(PV.PED_VALOR_DESCONTADO - PV.PED_CREDITO) AS ACUMULADO, PV.UNIDADE, COUNT(*) AS VENDAS FROM TB_PEDIDOS_VENDAS PV
         INNER JOIN TB_SETORES S ON (PV.SET_ID = S.SET_ID)
         INNER JOIN DBO.TB_UNIDADES U ON (S.SET_UNIDADE = U.UNI_ID)
@@ -74,7 +105,7 @@ export const salesRouter = createTRPCRouter({
       else if (input.dateSearch === Dates.Month)
         previousDateInitial = toDate(sub(new Date(), { months: 2 }));
 
-      const previous = await ctx.db.$queryRaw<Sale[]>`
+      const previous = await ctx.db.$queryRaw<SaleGroup[]>`
         SELECT S.SET_ID AS CC_CODIGO, S.SET_NOME AS CC, SUM(PV.PED_VALOR_DESCONTADO - PV.PED_CREDITO) AS ACUMULADO, PV.UNIDADE, COUNT(*) AS VENDAS FROM TB_PEDIDOS_VENDAS PV
         INNER JOIN TB_SETORES S ON (PV.SET_ID = S.SET_ID)
         INNER JOIN DBO.TB_UNIDADES U ON (S.SET_UNIDADE = U.UNI_ID)

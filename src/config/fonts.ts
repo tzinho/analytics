@@ -1,8 +1,8 @@
-import { Open_Sans, Bricolage_Grotesque, Atma } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 
-export const fontSans = Atma({
+export const fontSans = Inter({
   variable: "--font-sans",
-  weight: ["400"],
+  weight: ["300", "400", "700"],
   subsets: ["latin"],
 });
 

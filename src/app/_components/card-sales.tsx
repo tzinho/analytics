@@ -44,7 +44,7 @@ export const CardSales = ({ total }: CardSalesProps) => {
           <div className="flex flex-col">
             <span className="text-sm">Vendas realizadas no período</span>
             <span className="text-muted-foreground text-[10px]">
-              Clique em detalhes pra ver o relatório detalhado
+              Clique pra ver o relatório detalhado
             </span>
           </div>
 

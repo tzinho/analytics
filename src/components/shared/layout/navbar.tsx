@@ -7,12 +7,12 @@ import { ModeToggle } from "../mode-toggle";
 
 export const Navbar = () => {
   return (
-    <div className="flex items-center justify-between p-4">
-      <div>
+    <div className="bg-primary flex items-center justify-between p-4">
+      <div className="hidden">
         <h2 className="text-3xl font-bold">Mercatudo</h2>
       </div>
 
-      <div className="hidden gap-3 md:flex">
+      <div className="flex w-full justify-end gap-3">
         <Button variant="ghost">
           <Bell />
         </Button>
